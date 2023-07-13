@@ -49,7 +49,7 @@ public class LoginController {
         return "redirect:" + redirectURL;
     }
 
-    @GetMapping("login/new")
+    @GetMapping("/login/new")
     public String memberSave(@ModelAttribute MemberSaveForm form) {
         log.info("memberSaveForm");
         return "login/memberSaveForm";
