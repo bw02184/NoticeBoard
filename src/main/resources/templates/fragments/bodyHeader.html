@@ -1,6 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <div class="header" th:fragment="bodyHeader">
-  <div align="right" class="atag"><a class="#" href="/login">로그인</a></div>
+  <div align="right" class="atag">
+<!--    <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/login}">로그인</a>-->
+<!--    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/logout}"> 로그아웃</a>-->
+<!--    <a sec:authorize="!isAuthenticated()" class="btn btn-info" th:href="@{/login}">로그인</a>-->
+      <form th:action="@{/logout}" method="POST" sec:authorize="isAuthenticated()"><button class="btn btn-info" type="submit">로그아웃</button></form>
+  </div>
+
   <a href="/"><h3 class="text-muted">NoticeBoard</h3></a>
 </div>

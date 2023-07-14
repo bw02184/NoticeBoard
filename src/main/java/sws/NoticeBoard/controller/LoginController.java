@@ -63,10 +63,27 @@ public class LoginController {
       BindingResult bindingResult,
       @RequestParam(defaultValue = "/") String redirectURL) {
     if (bindingResult.hasErrors()) {
+      log.info("에러로 인한 이동");
       return "login/memberSaveForm";
     }
-    loginService.join(form);
-
+    try {
+      loginService.join(form);
+    } catch (IllegalStateException e) {
+      log.info("memberSaveException={}", e.getMessage());
+      bindingResult.reject("memberSaveFail", e.getMessage());
+      return "login/memberSaveForm";
+    }
     return "redirect:" + redirectURL;
+  }
+
+  // todo: 로그아웃 제대로 안되는 현상 고치기
+  @PostMapping("/logout")
+  public String logout(HttpServletRequest request) {
+    log.info("로그아웃 실행");
+    HttpSession session = request.getSession(false);
+    if (session != null) {
+      session.invalidate();
+    }
+    return "redirect:/";
   }
 }

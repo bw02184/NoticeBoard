@@ -27,7 +27,6 @@ public class LoginService {
 
   public void join(MemberSaveForm form) {
     Member findMember = memberRepository.findByLoginId(form.getLoginId());
-    // TODO: 2023-07-13  에러 처리 완료해야 함 (현재 화이트 페이지 발생)
     if (findMember != null) {
       throw new IllegalStateException("중복된 아이디 입니다.");
     }
