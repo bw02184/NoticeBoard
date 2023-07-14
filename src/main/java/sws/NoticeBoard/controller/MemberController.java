@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import sws.NoticeBoard.controller.form.MemberPWUpdateForm;
 import sws.NoticeBoard.controller.form.MemberUpdateForm;
 import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.service.MemberService;
@@ -47,6 +48,31 @@ public class MemberController {
       return "/member/memberInfo";
     }
     memberService.MemberInfoUpdate(loginMember.getLoginId(), form.getRealName(), form.getEmail());
+    return "redirect:" + redirectURL;
+  }
+
+  @GetMapping("/member/password")
+  public String memberPassword(@ModelAttribute MemberPWUpdateForm form) {
+    log.info("memberPWUpdateForm");
+    return "/member/memberPWUpdate";
+  }
+
+  @PostMapping("/member/password/update")
+  public String memberPWUpdate(
+      @Validated @ModelAttribute MemberPWUpdateForm form,
+      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+      BindingResult bindingResult,
+      @RequestParam(defaultValue = "/") String redirectURL) {
+    if (bindingResult.hasErrors()) {
+      return "/member/memberPWUpdate";
+    }
+    form.setLoginId(loginMember.getLoginId());
+    try {
+      memberService.MemberPWUpdate(form);
+    } catch (IllegalStateException e) {
+      bindingResult.reject("pwCheck", e.getMessage());
+      return "/member/memberPWUpdate";
+    }
     return "redirect:" + redirectURL;
   }
 }

@@ -12,8 +12,12 @@
         <p class="lead">회원 기능</p>
         <p>
         <form th:action="@{/logout}" method="POST"><button class="btn btn-lg btn-secondary" type="submit">로그아웃</button></form>
-            <a class="btn btn-lg btn-dark" href="/member">회원 정보</a>
         </p>
+        <p>
+            <a class="btn btn-lg btn-dark" href="/member">회원 정보 변경</a>
+            <a class="btn btn-lg btn-info" href="/member/password">비밀번호 변경</a>
+        </p>
+
 
     </div>
     <div th:replace="fragments/footer :: footer" />
