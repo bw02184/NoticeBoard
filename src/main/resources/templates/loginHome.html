@@ -11,9 +11,8 @@
         <h1>HELLO NoticeBoard</h1>
         <p class="lead">회원 기능</p>
         <p>
-            <a class="btn btn-lg btn-secondary" href="/login">로그인</a>
-            <a class="btn btn-lg btn-dark" href="/login/new">회원 가입</a>
-<!--            <input type="text">-->
+        <form th:action="@{/logout}" method="POST"><button class="btn btn-lg btn-secondary" type="submit">로그아웃</button></form>
+            <a class="btn btn-lg btn-dark" href="/member">회원 정보</a>
         </p>
 
     </div>
