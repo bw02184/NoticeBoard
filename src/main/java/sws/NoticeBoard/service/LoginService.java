@@ -27,13 +27,18 @@ public class LoginService {
   }
 
   public void join(MemberSaveForm form) {
+    log.info("emailConfirm={}", form.getEmailConfirm());
+
     Member findMember = memberRepository.findByLoginId(form.getLoginId());
     if (findMember != null) {
       throw new IllegalStateException("중복된 아이디 입니다.");
     }
 
     if (!form.getPassword().equals(form.getPassword2())) {
-      throw new IllegalStateException("비밀번호를 다시 입력 해 주세요");
+      throw new IllegalStateException("비밀번호를 다시 입력해 주세요");
+    }
+    if (!form.getEmailConfirm()) {
+      throw new IllegalStateException("이메일 본인인증을 해주세요");
     }
     Member member = new Member();
     member.setLoginId(form.getLoginId());
