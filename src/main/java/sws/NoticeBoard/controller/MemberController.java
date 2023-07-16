@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import sws.NoticeBoard.controller.form.MemberIdFindForm;
 import sws.NoticeBoard.controller.form.MemberPWUpdateForm;
 import sws.NoticeBoard.controller.form.MemberUpdateForm;
 import sws.NoticeBoard.domain.Member;
@@ -48,7 +49,7 @@ public class MemberController {
       return "/member/memberInfo";
     }
     try {
-      memberService.MemberInfoUpdate(
+      memberService.memberInfoUpdate(
           loginMember.getLoginId(), form.getRealName(), form.getEmail(), form.getEmailConfirm());
     } catch (IllegalStateException e) {
       bindingResult.reject("emailCheck", e.getMessage());
@@ -74,11 +75,38 @@ public class MemberController {
     }
     form.setLoginId(loginMember.getLoginId());
     try {
-      memberService.MemberPWUpdate(form);
+      memberService.memberPWUpdate(form);
     } catch (IllegalStateException e) {
       bindingResult.reject("pwCheck", e.getMessage());
       return "/member/memberPWUpdate";
     }
     return "redirect:" + redirectURL;
+  }
+
+  @GetMapping("/member/id/find")
+  public String memberId(@ModelAttribute MemberIdFindForm form) {
+    return "/member/memberIdFind";
+  }
+
+  @PostMapping("/member/id/find")
+  public String memberIdFind(
+      @Validated @ModelAttribute MemberIdFindForm form, BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+      return "/member/memberIdFind";
+    }
+    String loginId = "";
+    try {
+      loginId = memberService.memberIdFind(form);
+    } catch (IllegalStateException e) {
+      bindingResult.reject("emailCheck", e.getMessage());
+      return "/member/memberIdFind";
+    }
+    return "redirect:" + "/member/findId?loginId=" + loginId;
+  }
+
+  @GetMapping("/member/findId")
+  public String findId(@RequestParam String loginId, Model model) {
+    model.addAttribute("loginId", loginId);
+    return "/member/findId";
   }
 }
