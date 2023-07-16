@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import sws.NoticeBoard.controller.form.MemberIdFindForm;
-import sws.NoticeBoard.controller.form.MemberPWUpdateForm;
+import sws.NoticeBoard.controller.form.MemberPwFindForm;
+import sws.NoticeBoard.controller.form.MemberPwUpdateForm;
+import sws.NoticeBoard.controller.form.MemberSearchPwChangeForm;
 import sws.NoticeBoard.controller.form.MemberUpdateForm;
 import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.service.MemberService;
@@ -59,14 +62,14 @@ public class MemberController {
   }
 
   @GetMapping("/member/password")
-  public String memberPassword(@ModelAttribute MemberPWUpdateForm form) {
+  public String memberPassword(@ModelAttribute MemberPwUpdateForm form) {
     log.info("memberPWUpdateForm");
     return "/member/memberPWUpdate";
   }
 
   @PostMapping("/member/password/update")
   public String memberPWUpdate(
-      @Validated @ModelAttribute MemberPWUpdateForm form,
+      @Validated @ModelAttribute MemberPwUpdateForm form,
       @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
       BindingResult bindingResult,
       @RequestParam(defaultValue = "/") String redirectURL) {
@@ -101,12 +104,61 @@ public class MemberController {
       bindingResult.reject("emailCheck", e.getMessage());
       return "/member/memberIdFind";
     }
-    return "redirect:" + "/member/findId?loginId=" + loginId;
+    return "redirect:/member/findId?loginId=" + loginId;
   }
 
   @GetMapping("/member/findId")
   public String findId(@RequestParam String loginId, Model model) {
     model.addAttribute("loginId", loginId);
     return "/member/findId";
+  }
+
+  @GetMapping("/member/password/find")
+  public String memberPassword(@ModelAttribute MemberPwFindForm form) {
+    return "/member/memberPwFind";
+  }
+
+  @PostMapping("/member/password/find")
+  public String memberPasswordFind(
+      @Validated @ModelAttribute MemberPwFindForm form,
+      BindingResult bindingResult,
+      RedirectAttributes redirectAttributes) {
+    if (bindingResult.hasErrors()) {
+      return "/member/memberPwFind";
+    }
+    Member member;
+    try {
+      member = memberService.memberPwFind(form);
+    } catch (IllegalStateException e) {
+      bindingResult.reject("pwFindCheck", e.getMessage());
+      return "/member/memberPwFind";
+    }
+    redirectAttributes.addFlashAttribute("member", member);
+    return "redirect:/member/searchPw/change";
+  }
+
+  @GetMapping("/member/searchPw/change")
+  public String memberSearchPassword(
+      @ModelAttribute MemberSearchPwChangeForm form, @ModelAttribute("member") Member member) {
+    form.setLoginId(member.getLoginId());
+    return "/member/memberSearchPwChange";
+  }
+
+  @PostMapping("/member/searchPw/change")
+  public String memberSearchPasswordChange(
+      @Validated @ModelAttribute MemberSearchPwChangeForm form, BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+      return "/member/memberSearchPwChange";
+    }
+    try {
+      memberService.memberSearchPwChange(form);
+    } catch (IllegalStateException e) {
+      bindingResult.reject("pwCheck", e.getMessage());
+      return "/member/memberSearchPwChange";
+    } catch (RuntimeException e) {
+      log.info("비밀번호 변경 중 오류가 발생했습니다. 다시 실행해 주세요", e);
+      return "/home";
+    }
+    return "redirect:/";
   }
 }

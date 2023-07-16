@@ -6,7 +6,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sws.NoticeBoard.controller.form.MemberIdFindForm;
-import sws.NoticeBoard.controller.form.MemberPWUpdateForm;
+import sws.NoticeBoard.controller.form.MemberPwFindForm;
+import sws.NoticeBoard.controller.form.MemberPwUpdateForm;
+import sws.NoticeBoard.controller.form.MemberSearchPwChangeForm;
 import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.repository.MemberRepository;
 
@@ -36,7 +38,7 @@ public class MemberService {
     findMember.setEmail(email);
   }
 
-  public void memberPWUpdate(MemberPWUpdateForm form) {
+  public void memberPWUpdate(MemberPwUpdateForm form) {
     Member findMember = memberRepository.findByLoginId(form.getLoginId());
     if (!passwordEncoder.matches(form.getPassword(), findMember.getPassword())) {
       throw new IllegalStateException("현재 비밀번호를 다시 입력해 주세요");
@@ -48,11 +50,40 @@ public class MemberService {
   }
 
   public String memberIdFind(MemberIdFindForm form) {
-    Member emailMember = memberRepository.findByEmail(form.getEmail());
     if (!form.getEmailConfirm()) {
       throw new IllegalStateException("이메일 본인인증을 해주세요");
     }
     Member findMember = memberRepository.findByNameAndEmail(form.getRealName(), form.getEmail());
+    if (findMember == null) {
+      throw new IllegalStateException("이름 또는 이메일을 다시 입력해 주세요");
+    }
     return findMember.getLoginId();
+  }
+
+  public Member memberPwFind(MemberPwFindForm form) {
+    if (!form.getEmailConfirm()) {
+      throw new IllegalStateException("이메일 본인인증을 해주세요");
+    }
+    Member findMember = memberRepository.findByLoginId(form.getLoginId());
+    if (findMember == null) {
+      throw new IllegalStateException("아이디를 다시 입력해 주세요");
+    }
+    if (!findMember.getEmail().equals(form.getEmail())
+        || !findMember.getRealName().equals(form.getRealName())) {
+      throw new IllegalStateException("입력한 아이디와 이름, 이메일 정보가 틀립니다. 정확하게 입력해 주세요");
+    }
+    return findMember;
+  }
+
+  public void memberSearchPwChange(MemberSearchPwChangeForm form) {
+    log.info("form.loginId={}", form.getLoginId());
+    Member findMember = memberRepository.findByLoginId(form.getLoginId());
+    if (findMember == null) {
+      throw new RuntimeException("비밀번호 변경을 다시 해 주세요");
+    }
+    if (!form.getNewPassword().equals(form.getNewPassword2())) {
+      throw new IllegalStateException("재확인 비밀번호를 다시 입력해 주세요");
+    }
+    findMember.setPassword(passwordEncoder.encode(form.getNewPassword()));
   }
 }
