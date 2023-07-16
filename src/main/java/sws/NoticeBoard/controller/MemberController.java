@@ -47,7 +47,13 @@ public class MemberController {
     if (bindingResult.hasErrors()) {
       return "/member/memberInfo";
     }
-    memberService.MemberInfoUpdate(loginMember.getLoginId(), form.getRealName(), form.getEmail());
+    try {
+      memberService.MemberInfoUpdate(
+          loginMember.getLoginId(), form.getRealName(), form.getEmail(), form.getEmailConfirm());
+    } catch (IllegalStateException e) {
+      bindingResult.reject("emailCheck", e.getMessage());
+      return "/member/memberInfo";
+    }
     return "redirect:" + redirectURL;
   }
 

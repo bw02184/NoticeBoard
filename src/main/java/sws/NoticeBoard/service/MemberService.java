@@ -21,7 +21,11 @@ public class MemberService {
     return memberRepository.findByLoginId(loginId);
   }
 
-  public void MemberInfoUpdate(String loginId, String realName, String email) {
+  public void MemberInfoUpdate(
+      String loginId, String realName, String email, Boolean emailConfirm) {
+    if (!emailConfirm) {
+      throw new IllegalStateException("이메일 본인인증을 해주세요");
+    }
     Member findMember = memberRepository.findByLoginId(loginId);
     findMember.setRealName(realName);
     findMember.setEmail(email);

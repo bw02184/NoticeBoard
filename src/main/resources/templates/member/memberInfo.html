@@ -30,11 +30,26 @@ color: #dc3545;
       <input type="text" th:field="*{realName}" class="form-control" placeholder="이름을 입력하세요" th:class="${#fields.hasErrors('realName')}? 'form-control fieldError' : 'form-control'">
       <p th:if="${#fields.hasErrors('realName')}" th:errors="*{realName}">Incorrect date</p>
     </div>
-    <div class="form-group">
+<!--    <div class="form-group">-->
+<!--      <label th:for="email">이메일</label>-->
+<!--      <input type="text" th:field="*{email}" class="form-control" placeholder="이메일을 입력하세요" th:class="${#fields.hasErrors('email')}? 'form-control fieldError' : 'form-control'">-->
+<!--      <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Incorrect date</p>-->
+<!--    </div>-->
+    <div class="form-group email-form">
       <label th:for="email">이메일</label>
-      <input type="text" th:field="*{email}" class="form-control" placeholder="이메일을 입력하세요" th:class="${#fields.hasErrors('email')}? 'form-control fieldError' : 'form-control'">
+      <div class="input-group">
+        <input type="text" th:field="*{email}" class="form-control" name="userEmail1" id="userEmail1" placeholder="이메일을 입력하세요" th:class="${#fields.hasErrors('email')}? 'form-control fieldError' : 'form-control'" >
+        <div class="input-group-addon">
+          <button type="button"  class="btn btn-primary" id="mail-Check-Btn">본인인증</button>
+        </div>
+        <div class="mail-check-box">
+          <input class="form-control mail-check-input" placeholder="인증번호 10자리를 입력해주세요!" disabled="disabled" maxlength="10">
+        </div>
+        <span id="mail-check-warn"></span>
+      </div>
       <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Incorrect date</p>
     </div>
+    <input type="checkbox" th:field="*{emailConfirm}" class="form-control" id="emailConfirm" name="emailConfirm"  value="false" style="display:none" checked="false" />
 
 
     <button type="submit" class="btn btn-primary">Submit</button>
@@ -43,4 +58,45 @@ color: #dc3545;
   <div th:replace="fragments/footer :: footer" />
 </div> <!-- /container -->
 </body>
+
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script type="text/javascript">
+ $('#mail-Check-Btn').click(function() {
+		const email = $('#userEmail1').val();; // 이메일 주소값 얻어오기!
+		console.log('완성된 이메일 : ' + email); // 이메일 오는지 확인
+		const checkInput = $('.mail-check-input') // 인증번호 입력하는곳
+
+		$.ajax({
+			type : 'post',
+            url : '/login/mail/confirm',
+            data : 'email='+email,
+			success : function (data) {
+				console.log("data : " +  data);
+				checkInput.attr('disabled',false);
+				code =data;
+				alert('인증번호가 전송되었습니다.')
+			}
+		}); // end ajax
+	}); // end send email
+
+	// 인증번호 비교
+	// blur -> focus가 벗어나는 경우 발생
+	$('.mail-check-input').blur(function () {
+		const inputCode = $(this).val();
+		const $resultMsg = $('#mail-check-warn');
+		const confirm = $('#emailConfirm').val();
+
+		if(inputCode === code){
+			$resultMsg.html('인증번호가 일치합니다. 이메일 변경이 가능합니다!.');
+			$resultMsg.css('color','green');
+			$('#mail-Check-Btn').attr('disabled',true);
+			$('#userEmail1').attr('readonly',true);
+			document.getElementById("emailConfirm").checked="true";
+			console.log("emailConfirm : " +  confirm);
+		}else{
+			$resultMsg.html('인증번호가 불일치 합니다. 다시 확인해주세요!.');
+			$resultMsg.css('color','red');
+		}
+	});
+</script>
 </html>
