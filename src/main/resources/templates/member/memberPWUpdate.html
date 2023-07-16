@@ -14,6 +14,9 @@ color: #dc3545;
 <body>
 <div class="container">
   <div th:replace="fragments/bodyHeader :: bodyHeader" />
+  <div class="jumbotron">
+    <h1>비밀번호 변경</h1>
+  </div>
   <form role="form" action="/member/password/update" th:object="${memberPWUpdateForm}"
         method="post">
     <div th:if="${#fields.hasGlobalErrors()}">

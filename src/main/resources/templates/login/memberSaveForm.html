@@ -15,6 +15,9 @@ color: #dc3545;
 <body>
 <div class="container">
   <div th:replace="fragments/bodyHeader :: bodyHeader" />
+  <div class="jumbotron">
+    <h1>회원 가입</h1>
+  </div>
   <form role="form" action="/login/new" th:object="${memberSaveForm}"
         method="post">
     <div th:if="${#fields.hasGlobalErrors()}">
