@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sws.NoticeBoard.controller.form.MemberDeleteForm;
 import sws.NoticeBoard.controller.form.MemberIdFindForm;
 import sws.NoticeBoard.controller.form.MemberPwFindForm;
 import sws.NoticeBoard.controller.form.MemberPwUpdateForm;
@@ -76,7 +77,6 @@ public class MemberService {
   }
 
   public void memberSearchPwChange(MemberSearchPwChangeForm form) {
-    log.info("form.loginId={}", form.getLoginId());
     Member findMember = memberRepository.findByLoginId(form.getLoginId());
     if (findMember == null) {
       throw new RuntimeException("비밀번호 변경을 다시 해 주세요");
@@ -85,5 +85,13 @@ public class MemberService {
       throw new IllegalStateException("재확인 비밀번호를 다시 입력해 주세요");
     }
     findMember.setPassword(passwordEncoder.encode(form.getNewPassword()));
+  }
+
+  public void memberDelete(MemberDeleteForm form) {
+    Member findMember = memberRepository.findByLoginId(form.getLoginId());
+    if (!passwordEncoder.matches(form.getPassword(), findMember.getPassword())) {
+      throw new IllegalStateException("현재 비밀번호를 다시 입력해 주세요");
+    }
+    memberRepository.delete(findMember);
   }
 }

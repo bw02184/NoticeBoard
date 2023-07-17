@@ -1,5 +1,7 @@
 package sws.NoticeBoard.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import sws.NoticeBoard.controller.form.MemberDeleteForm;
 import sws.NoticeBoard.controller.form.MemberIdFindForm;
 import sws.NoticeBoard.controller.form.MemberPwFindForm;
 import sws.NoticeBoard.controller.form.MemberPwUpdateForm;
@@ -159,6 +162,37 @@ public class MemberController {
       log.info("비밀번호 변경 중 오류가 발생했습니다. 다시 실행해 주세요", e);
       return "/home";
     }
+    return "redirect:/";
+  }
+
+  @GetMapping("/member/delete")
+  public String memberDelete(
+      @ModelAttribute MemberDeleteForm form,
+      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+    form.setLoginId(loginMember.getLoginId());
+    return "/member/memberDelete";
+  }
+
+  @PostMapping("/member/delete")
+  public String memberDelete(
+      @Validated @ModelAttribute MemberDeleteForm form,
+      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+      BindingResult bindingResult,
+      HttpServletRequest request) {
+    // form 화면에서 강제로 아이디를 변경했을 경우를 대비해서 세션에서 로그인 아이디를 얻어 와서 form 데이터에 넣어준다.
+    form.setLoginId(loginMember.getLoginId());
+    if (bindingResult.hasErrors()) {
+      return "/member/memberDelete";
+    }
+    try {
+      memberService.memberDelete(form);
+    } catch (IllegalStateException e) {
+      bindingResult.reject("pwCheck", e.getMessage());
+      return "/member/memberDelete";
+    }
+    // 로그아웃
+    HttpSession session = request.getSession(false);
+    session.invalidate();
     return "redirect:/";
   }
 }
