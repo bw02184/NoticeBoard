@@ -31,10 +31,11 @@ public class MemberService {
       throw new IllegalStateException("이메일 본인인증을 해주세요");
     }
     Member emailMember = memberRepository.findByEmail(email);
-    if (emailMember != null) {
+    Member findMember = memberRepository.findByLoginId(loginId);
+    // 이메일 변경을 하지 않을 경우 validation 하지 않기
+    if (emailMember != null && !findMember.getEmail().equals(email)) {
       throw new IllegalStateException("이메일로 가입한 회원이 존재합니다. 다른 이메일을 적어 주세요");
     }
-    Member findMember = memberRepository.findByLoginId(loginId);
     findMember.setRealName(realName);
     findMember.setEmail(email);
   }
