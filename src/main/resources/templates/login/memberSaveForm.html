@@ -11,6 +11,10 @@
 border-color: #bd2130;
 color: #dc3545;
 }
+.field-error {
+border-color: #dc3545;
+    color: #dc3545;
+}
 </style>
 <body>
 <div class="container">
@@ -26,13 +30,13 @@ color: #dc3545;
     </div>
     <div class="form-group">
       <label th:for="realName">이름</label>
-      <input type="text" th:field="*{realName}" class="form-control" placeholder="이름을 입력하세요" th:class="${#fields.hasErrors('realName')}? 'form-control fieldError' : 'form-control'">
-      <p th:if="${#fields.hasErrors('realName')}" th:errors="*{realName}">Incorrect date</p>
+      <input type="text" th:field="*{realName}" class="form-control" placeholder="이름을 입력하세요"  th:errorclass="fieldError">
+      <div class="field-error" th:errors="*{realName}" />
     </div>
     <div class="form-group email-form">
       <label th:for="email">이메일</label>
       <div class="input-group">
-        <input type="text" th:field="*{email}" class="form-control" name="userEmail1" id="userEmail1" placeholder="이메일을 입력하세요" th:class="${#fields.hasErrors('email')}? 'form-control fieldError' : 'form-control'" >
+        <input type="text" th:field="*{email}" class="form-control" name="userEmail1" id="userEmail1" placeholder="이메일을 입력하세요"  th:errorclass="fieldError">
         <div class="input-group-addon">
           <button type="button"  class="btn btn-primary" id="mail-Check-Btn">본인인증</button>
         </div>
@@ -41,24 +45,24 @@ color: #dc3545;
         </div>
         <span id="mail-check-warn"></span>
       </div>
-      <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Incorrect date</p>
+      <div class="field-error" th:errors="*{email}" />
     </div>
     <div class="form-group">
       <label th:for="loginId">아이디</label>
-      <input type="text" th:field="*{loginId}" class="form-control" placeholder="아이디를 입력하세요" th:class="${#fields.hasErrors('loginId')}? 'form-control fieldError' : 'form-control'">
-      <p th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}">Incorrect date</p>
+      <input type="text" th:field="*{loginId}" class="form-control" placeholder="아이디를 입력하세요" th:errorclass="fieldError">
+      <div class="field-error" th:errors="*{loginId}" />
+    </div>
+    <div>
+      <label for="password">비밀번호</label>
+      <input type="password" id="password" th:field="*{password}" class="form-control" th:errorclass="fieldError">
+      <div class="field-error" th:errors="*{password}" />
     </div>
     <div class="form-group">
-      <label th:for="password">비밀번호</label>
-      <input type="password" th:field="*{password}" class="form-control" placeholder="패스워드를 입력하세요" th:class="${#fields.hasErrors('password')}? 'form-control fieldError' : 'form-control'">
-      <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Incorrect date</p>
+      <label th:for="password2">비밀번호 확인</label>
+      <input type="password" th:field="*{password2}" class="form-control" placeholder="패스워드를 다시 입력하세요" th:errorclass="fieldError">
+      <div class="field-error" th:errors="*{password2}" />
     </div>
-    <div class="form-group">
-      <label th:for="password2">비밀번호</label>
-      <input type="password" th:field="*{password2}" class="form-control" placeholder="패스워드를 다시 입력하세요" th:class="${#fields.hasErrors('password2')}? 'form-control fieldError' : 'form-control'">
-      <p th:if="${#fields.hasErrors('password2')}" th:errors="*{password2}">Incorrect date</p>
-    </div>
-<!--    <input type="hidden" th:field="*{emailConfirm}" class="form-control" id="emailConfirm" name="emailConfirm" value = "false"/>-->
+    <input type="hidden" th:field="*{checkedEmail}" class="form-control" id="checkedEmail" name="checkedEmail"/>
     <input type="checkbox" th:field="*{emailConfirm}" class="form-control" id="emailConfirm" name="emailConfirm"  value="false" style="display:none" checked="false" />
     <button type="submit" class="btn btn-primary">Submit</button>
 
@@ -73,6 +77,7 @@ color: #dc3545;
 		const email = $('#userEmail1').val();; // 이메일 주소값 얻어오기!
 		console.log('완성된 이메일 : ' + email); // 이메일 오는지 확인
 		const checkInput = $('.mail-check-input') // 인증번호 입력하는곳
+		const checkEmail = $('.checkedEmail') // 인증번호 입력하는곳
 
 		$.ajax({
 			type : 'post',
