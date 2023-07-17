@@ -45,7 +45,7 @@ public class MemberService {
       throw new IllegalStateException("현재 비밀번호를 다시 입력해 주세요");
     }
     if (!form.getNewPassword().equals(form.getNewPassword2())) {
-      throw new IllegalStateException("재확인 비밀번호를 다시 입력해 주세요");
+      throw new IllegalStateException("변경할 비밀번호를 다시 입력해 주세요");
     }
     findMember.setPassword(passwordEncoder.encode(form.getNewPassword()));
   }
@@ -82,7 +82,7 @@ public class MemberService {
       throw new RuntimeException("비밀번호 변경을 다시 해 주세요");
     }
     if (!form.getNewPassword().equals(form.getNewPassword2())) {
-      throw new IllegalStateException("재확인 비밀번호를 다시 입력해 주세요");
+      throw new IllegalStateException("변경할 비밀번호를 다시 입력해 주세요");
     }
     findMember.setPassword(passwordEncoder.encode(form.getNewPassword()));
   }

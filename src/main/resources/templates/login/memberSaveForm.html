@@ -18,7 +18,7 @@ color: #dc3545;
   <div class="jumbotron">
     <h1>회원 가입</h1>
   </div>
-  <form role="form" action="/login/new" th:object="${memberSaveForm}"
+  <form role="form" name="myform" id="myform" action="/login/new" th:object="${memberSaveForm}"
         method="post">
     <div th:if="${#fields.hasGlobalErrors()}">
       <p class="fieldError" th:each="err : ${#fields.globalErrors()}"
@@ -43,8 +43,6 @@ color: #dc3545;
       </div>
       <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Incorrect date</p>
     </div>
-
-
     <div class="form-group">
       <label th:for="loginId">아이디</label>
       <input type="text" th:field="*{loginId}" class="form-control" placeholder="아이디를 입력하세요" th:class="${#fields.hasErrors('loginId')}? 'form-control fieldError' : 'form-control'">
@@ -108,6 +106,7 @@ color: #dc3545;
 			$resultMsg.css('color','red');
 		}
 	});
+
 </script>
 
 </html>

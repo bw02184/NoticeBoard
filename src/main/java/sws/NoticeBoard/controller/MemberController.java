@@ -48,8 +48,8 @@ public class MemberController {
   @PostMapping("/member/update")
   public String memberUpdate(
       @Validated @ModelAttribute MemberUpdateForm form,
-      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
       BindingResult bindingResult,
+      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
       @RequestParam(defaultValue = "/") String redirectURL) {
     if (bindingResult.hasErrors()) {
       return "/member/memberInfo";
@@ -73,10 +73,11 @@ public class MemberController {
   @PostMapping("/member/password/update")
   public String memberPWUpdate(
       @Validated @ModelAttribute MemberPwUpdateForm form,
-      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
       BindingResult bindingResult,
+      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
       @RequestParam(defaultValue = "/") String redirectURL) {
     if (bindingResult.hasErrors()) {
+      log.info("에러로 인한 이동");
       return "/member/memberPWUpdate";
     }
     form.setLoginId(loginMember.getLoginId());
@@ -176,8 +177,8 @@ public class MemberController {
   @PostMapping("/member/delete")
   public String memberDelete(
       @Validated @ModelAttribute MemberDeleteForm form,
-      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
       BindingResult bindingResult,
+      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
       HttpServletRequest request) {
     // form 화면에서 강제로 아이디를 변경했을 경우를 대비해서 세션에서 로그인 아이디를 얻어 와서 form 데이터에 넣어준다.
     form.setLoginId(loginMember.getLoginId());
