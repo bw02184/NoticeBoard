@@ -10,6 +10,7 @@ public class MemberPwFindForm {
   @NotEmpty private String loginId;
   @NotEmpty private String realName;
   @NotEmpty @Email private String email;
+  @Email private String checkedEmail;
 
   @Column(columnDefinition = "boolean default false")
   private Boolean emailConfirm;

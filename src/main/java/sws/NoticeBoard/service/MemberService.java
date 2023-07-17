@@ -26,8 +26,8 @@ public class MemberService {
   }
 
   public void memberInfoUpdate(
-      String loginId, String realName, String email, Boolean emailConfirm) {
-    if (!emailConfirm) {
+      String loginId, String realName, String email, String checkedEmail, Boolean emailConfirm) {
+    if (!email.equals(checkedEmail) || !emailConfirm) {
       throw new IllegalStateException("이메일 본인인증을 해주세요");
     }
     Member emailMember = memberRepository.findByEmail(email);
@@ -51,7 +51,7 @@ public class MemberService {
   }
 
   public String memberIdFind(MemberIdFindForm form) {
-    if (!form.getEmailConfirm()) {
+    if (!form.getEmail().equals(form.getCheckedEmail()) || !form.getEmailConfirm()) {
       throw new IllegalStateException("이메일 본인인증을 해주세요");
     }
     Member findMember = memberRepository.findByNameAndEmail(form.getRealName(), form.getEmail());
@@ -62,7 +62,7 @@ public class MemberService {
   }
 
   public Member memberPwFind(MemberPwFindForm form) {
-    if (!form.getEmailConfirm()) {
+    if (!form.getEmail().equals(form.getCheckedEmail()) || !form.getEmailConfirm()) {
       throw new IllegalStateException("이메일 본인인증을 해주세요");
     }
     Member findMember = memberRepository.findByLoginId(form.getLoginId());

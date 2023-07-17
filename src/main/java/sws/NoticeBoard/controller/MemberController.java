@@ -56,7 +56,11 @@ public class MemberController {
     }
     try {
       memberService.memberInfoUpdate(
-          loginMember.getLoginId(), form.getRealName(), form.getEmail(), form.getEmailConfirm());
+          loginMember.getLoginId(),
+          form.getRealName(),
+          form.getEmail(),
+          form.getCheckedEmail(),
+          form.getEmailConfirm());
     } catch (IllegalStateException e) {
       bindingResult.reject("emailCheck", e.getMessage());
       return "/member/memberInfo";

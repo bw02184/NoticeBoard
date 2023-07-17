@@ -34,7 +34,7 @@ public class LoginService {
     if (!form.getPassword().equals(form.getPassword2())) {
       throw new IllegalStateException("비밀번호를 다시 입력해 주세요");
     }
-    if (!form.getEmailConfirm()) {
+    if (!form.getEmail().equals(form.getCheckedEmail()) || !form.getEmailConfirm()) {
       throw new IllegalStateException("이메일 본인인증을 해주세요");
     }
     Member emailMember = memberRepository.findByEmail(form.getEmail());

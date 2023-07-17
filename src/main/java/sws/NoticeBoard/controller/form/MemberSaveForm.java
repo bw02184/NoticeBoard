@@ -23,6 +23,7 @@ public class MemberSaveForm {
   private String password2;
 
   @NotEmpty @Email private String email;
+  @Email private String checkedEmail;
 
   @Column(columnDefinition = "boolean default false")
   private Boolean emailConfirm;
