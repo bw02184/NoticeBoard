@@ -37,7 +37,8 @@ border-color: #dc3545;
       <input type="password" id="password" th:field="*{password}" class="form-control" th:errorclass="fieldError">
       <div class="field-error" th:errors="*{password}" />
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">회원 탈퇴</button>
+    <button class="btn btn-primary" th:onclick="|location.href='@{/}'|" type="button">취소</button>
   </form>
   <br/>
   <div th:replace="fragments/footer :: footer" />
