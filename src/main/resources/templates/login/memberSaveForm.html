@@ -67,7 +67,6 @@ border-color: #dc3545;
     <button type="submit" class="btn btn-primary">확인</button>
     <button class="btn btn-primary" th:onclick="|location.href='@{/}'|" type="button">취소</button>
 
-
   </form>
   <br/>
   <div th:replace="fragments/footer :: footer" />
@@ -104,7 +103,7 @@ border-color: #dc3545;
 		const $resultMsg = $('#mail-check-warn');
 
 		if(inputCode === code){
-			$resultMsg.html('인증번호가 일치합니다. 회원 가입이 가능합니다!.');
+			$resultMsg.html('인증번호가 일치합니다. 본인인증 되셨습니다!.');
 			$resultMsg.css('color','green');
 			$('#mail-Check-Btn').attr('disabled',true);
 			$('#userEmail1').attr('readonly',true);
