@@ -32,6 +32,7 @@ public class WebConfig implements WebMvcConfigurer {
             "/logout",
             "/css/**",
             "/*ico",
+            "/emailCheck.js",
             "/error");
   }
 }
