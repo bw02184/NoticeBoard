@@ -1,6 +1,5 @@
 package sws.NoticeBoard.service;
 
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,7 +45,6 @@ public class LoginService {
     member.setEmail(form.getEmail());
     member.setPassword(passwordEncoder.encode(form.getPassword()));
     member.setRealName(form.getRealName());
-    member.setCreatedAt(LocalDateTime.now());
     member.setIsAdmin(false);
 
     memberRepository.save(member);
