@@ -42,7 +42,7 @@ border-color: #dc3545;
 
         <div align="right">
           <button class="my_btn" type="submit">저장</button>
-          <input type="hidden" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" id="title" name="title" th:errorclass="fieldError">
+          <input type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" id="title" name="title" th:errorclass="fieldError">
           <div class="field-error" th:errors="*{title}" />
 
         </div>

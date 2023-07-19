@@ -41,7 +41,7 @@ public class BoardController {
     }
     boardService.save(form, loginMember.getLoginId());
 
-    return "board/boarList";
+    return "redirect:/board/list";
   }
 
   @GetMapping("/board/list")
