@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import sws.NoticeBoard.controller.form.BoardForm;
 import sws.NoticeBoard.domain.Board;
@@ -37,8 +36,7 @@ public class BoardController {
   public String boardSave(
       @Validated @ModelAttribute BoardForm form,
       BindingResult bindingResult,
-      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-      @RequestParam(defaultValue = "/") String redirectURL) {
+      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
     if (bindingResult.hasErrors()) {
       return "board/boardSave";
     }
@@ -61,6 +59,14 @@ public class BoardController {
       HttpServletRequest request,
       HttpServletResponse response) {
     Board findBoard = boardService.findById(id);
+    setCookie(id, request, response);
+    form.setContent(findBoard.getContent());
+    form.setTitle(findBoard.getTitle());
+
+    return "board/boardInfo";
+  }
+
+  private void setCookie(Long id, HttpServletRequest request, HttpServletResponse response) {
     // 쿠키를 이용해 로그인 시 한번만 조회수가 카운트 되도록 변경
     Cookie oldCookie = null;
     Cookie[] cookies = request.getCookies();
@@ -82,9 +88,26 @@ public class BoardController {
       newCookie.setMaxAge(60 * 60 * 24);
       response.addCookie(newCookie);
     }
-    form.setContent(findBoard.getContent());
-    form.setTitle(findBoard.getTitle());
+  }
 
-    return "board/boardInfo";
+  @GetMapping("/board/list/{id}/change")
+  public String boardChange(@ModelAttribute BoardForm form, @PathVariable("id") Long id) {
+    Board findBoard = boardService.findById(id);
+    form.setId(findBoard.getId());
+    form.setTitle(findBoard.getTitle());
+    form.setContent(findBoard.getContent());
+    return "board/boardChange";
+  }
+
+  @PostMapping("/board/list/{id}/change")
+  public String boardChange(
+      @Validated @ModelAttribute BoardForm form, BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+      return "board/boardChange";
+    }
+    log.info("{}{}{}", form.getId(), form.getTitle(), form.getContent());
+    boardService.update(form);
+
+    return "redirect:/board/list";
   }
 }

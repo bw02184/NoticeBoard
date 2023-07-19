@@ -12,6 +12,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class BoardForm {
+  private Long id;
+
   @NotEmpty
   @Column(length = 100, nullable = false)
   private String title; // 제목

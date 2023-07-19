@@ -38,9 +38,14 @@ public class BoardService {
     return boardRepository.findById(id);
   }
 
-  public Board viewCount(Long id) {
+  public void viewCount(Long id) {
     Board findBoard = boardRepository.findById(id);
     findBoard.setViewCount(findBoard.getViewCount() + 1);
-    return findBoard;
+  }
+
+  public void update(BoardForm form) {
+    Board findBoard = boardRepository.findById(form.getId());
+    findBoard.setTitle(form.getTitle());
+    findBoard.setContent(form.getContent());
   }
 }

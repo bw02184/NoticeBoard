@@ -35,14 +35,11 @@ border-color: #dc3545;
 
     <div id="form-container" class="container">
       <div th:object="${boardForm}">
-
         <div align="right">
           <input type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" readonly id="title" name="title" th:errorclass="fieldError">
-
         </div>
         <!-- Create the editor container -->
-        <div  id="editor-container" aria-readonly="true">
-        </div>
+        <div  id="editor-container" aria-readonly="true"></div>
         <input type="hidden" th:field="*{content}" class="form-control" id="content" name="content">
 
       </div>
@@ -70,7 +67,6 @@ border-color: #dc3545;
         placeholder: content,
         readOnly: true
     });
-    console.log(content);
 
 <!--const selection = quill.getSelection(true)-->
 <!--quill.insertText(selection.index, content) // 셀렉션 위치-->

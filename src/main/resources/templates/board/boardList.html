@@ -13,6 +13,7 @@
         <th>글쓴이</th>
         <th>작성일</th>
         <th>조회</th>
+        <th>수정</th>
       </tr>
       </thead>
       <tbody>
@@ -22,6 +23,11 @@
         <td th:text="${form.member?.realName}"></td>
         <td th:text="${#temporals.format(form.create_at,'yyyy년 MM월 dd일 HH시 mm분')}"></td>
         <td th:text="${form.viewCount}"></td>
+        <td>
+          <a th:if="${session.loginMember?.loginId == form.member?.loginId}" href="#"
+             th:href="@{|/board/list/${form.id}/change|}"
+             class="btn btn-danger">수정</a>
+        </td>
       </tr>
       </tbody>
     </table>

@@ -34,7 +34,7 @@ border-color: #dc3545;
     <link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet" />
 
     <div id="form-container" class="container">
-      <form th:action="@{/board/save}" th:object="${boardForm}" method="POST">
+      <form th:action="@{|/board/list/*{id}/change|}" th:object="${boardForm}" method="POST">
         <div th:if="${#fields.hasGlobalErrors()}">
           <p class="fieldError" th:each="err : ${#fields.globalErrors()}"
              th:text="${err}">전체 오류 메시지</p>
@@ -49,7 +49,7 @@ border-color: #dc3545;
         <!-- Create the editor container -->
         <div  id="editor-container">
         </div>
-        <input type="hidden" id="quill_html" name="content">
+        <input type="hidden" th:field="*{content}" class="form-control" id="content" name="content">
 
       </form>
     </div>
@@ -59,6 +59,7 @@ border-color: #dc3545;
 
     <!-- Initialize Quill editor -->
     <script>
+    const content = document.getElementById('content').value;
     var quill = new Quill('#editor-container', {
     modules: {
     toolbar: [
@@ -71,9 +72,13 @@ border-color: #dc3545;
     theme: 'snow'  // or 'bubble'
     });
 
+    const selection = quill.getSelection(true)
+    quill.insertText(selection.index, content) // 셀렉션 위치
+
     quill.on('text-change', function() {
-        document.getElementById("quill_html").value = quill.getText();
+        document.getElementById("content").value = quill.getText();
 });
+
 <!--글자수 5000자 제한(넘길 시 글자 제거)-->
 const maxLength = 5000
 
@@ -81,6 +86,8 @@ quill.on('editor-change', e => {
 	const length = quill.getLength()
 	if (length > maxLength) quill.deleteText(maxLength, length)
 })
+
+
 </script>
 
   </div>
