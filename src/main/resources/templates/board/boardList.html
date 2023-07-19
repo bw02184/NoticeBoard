@@ -20,7 +20,7 @@
         <td th:text="${form.id}" th:onclick="|location.href='@{/board/list/{id}(id=${form.id})}'|"></td>
         <td th:text="${form.title}" th:onclick="|location.href='@{/board/list/{id}(id=${form.id})}'|"></td>
         <td th:text="${form.member?.realName}"></td>
-        <td th:text="${form.create_at}"></td>
+        <td th:text="${#temporals.format(form.create_at,'yyyy년 MM월 dd일 HH시 mm분')}"></td>
         <td th:text="${form.viewCount}"></td>
       </tr>
       </tbody>
