@@ -35,7 +35,7 @@ public class Board {
   @Column(length = 5000)
   private String content; // 내용
 
-  private Long viewCount; // 조회수
+  private int viewCount; // 조회수
 
   @Column(columnDefinition = "boolean default false")
   private Boolean noticeYn; // 공지글 여부

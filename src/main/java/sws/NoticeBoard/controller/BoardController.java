@@ -1,6 +1,9 @@
 package sws.NoticeBoard.controller;
 
 import java.util.List;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -52,8 +55,33 @@ public class BoardController {
   }
 
   @GetMapping("/board/list/{id}")
-  public String boardInfo(@ModelAttribute BoardForm form, @PathVariable("id") Long id) {
+  public String boardInfo(
+      @ModelAttribute BoardForm form,
+      @PathVariable("id") Long id,
+      HttpServletRequest request,
+      HttpServletResponse response) {
     Board findBoard = boardService.findById(id);
+    // 쿠키를 이용해 로그인 시 한번만 조회수가 카운트 되도록 변경
+    Cookie oldCookie = null;
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null)
+      for (Cookie cookie : cookies) if (cookie.getName().equals("boardView")) oldCookie = cookie;
+
+    if (oldCookie != null) {
+      if (!oldCookie.getValue().contains("[" + id.toString() + "]")) {
+        boardService.viewCount(id);
+        oldCookie.setValue(oldCookie.getValue() + "_[" + id + "]");
+        oldCookie.setPath("/");
+        oldCookie.setMaxAge(60 * 60 * 24);
+        response.addCookie(oldCookie);
+      }
+    } else {
+      boardService.viewCount(id);
+      Cookie newCookie = new Cookie("boardView", "[" + id + "]");
+      newCookie.setPath("/");
+      newCookie.setMaxAge(60 * 60 * 24);
+      response.addCookie(newCookie);
+    }
     form.setContent(findBoard.getContent());
     form.setTitle(findBoard.getTitle());
 

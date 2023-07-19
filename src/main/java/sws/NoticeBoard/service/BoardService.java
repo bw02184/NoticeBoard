@@ -26,7 +26,7 @@ public class BoardService {
     board.setContent(form.getContent());
     board.setNoticeYn(false);
     board.setMember(findmember);
-    board.setViewCount(0L);
+    board.setViewCount(0);
     boardRepository.save(board);
   }
 
@@ -36,5 +36,11 @@ public class BoardService {
 
   public Board findById(Long id) {
     return boardRepository.findById(id);
+  }
+
+  public Board viewCount(Long id) {
+    Board findBoard = boardRepository.findById(id);
+    findBoard.setViewCount(findBoard.getViewCount() + 1);
+    return findBoard;
   }
 }

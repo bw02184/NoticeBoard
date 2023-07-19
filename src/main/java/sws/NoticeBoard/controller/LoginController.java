@@ -76,14 +76,5 @@ public class LoginController {
     return "redirect:" + redirectURL;
   }
 
-  // todo: 로그아웃 제대로 안되는 현상 고치기
-  @PostMapping("/logout")
-  public String logout(HttpServletRequest request) {
-    log.info("로그아웃 실행");
-    HttpSession session = request.getSession(false);
-    if (session != null) {
-      session.invalidate();
-    }
-    return "redirect:/";
-  }
+  // logout은 SpringSecurity 기능 이용
 }
