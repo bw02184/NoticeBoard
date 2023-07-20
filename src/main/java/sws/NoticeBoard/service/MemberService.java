@@ -1,5 +1,6 @@
 package sws.NoticeBoard.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,7 +11,9 @@ import sws.NoticeBoard.controller.form.MemberIdFindForm;
 import sws.NoticeBoard.controller.form.MemberPwFindForm;
 import sws.NoticeBoard.controller.form.MemberPwUpdateForm;
 import sws.NoticeBoard.controller.form.MemberSearchPwChangeForm;
+import sws.NoticeBoard.domain.Board;
 import sws.NoticeBoard.domain.Member;
+import sws.NoticeBoard.repository.BoardRepository;
 import sws.NoticeBoard.repository.MemberRepository;
 
 @Slf4j
@@ -19,6 +22,7 @@ import sws.NoticeBoard.repository.MemberRepository;
 @RequiredArgsConstructor
 public class MemberService {
   private final MemberRepository memberRepository;
+  private final BoardRepository boardRepository;
   private final PasswordEncoder passwordEncoder;
 
   public Member MemberSearch(String loginId) {
@@ -92,6 +96,12 @@ public class MemberService {
     Member findMember = memberRepository.findByLoginId(form.getLoginId());
     if (!passwordEncoder.matches(form.getPassword(), findMember.getPassword())) {
       throw new IllegalStateException("현재 비밀번호를 다시 입력해 주세요");
+    }
+    Member deletedMember = memberRepository.findByLoginId("deleted");
+    // 회원 탈퇴 시 그동안 쓴 게시물을 탈퇴회원이 쓴 게시물로 변경(탈퇴처리)
+    List<Board> boardList = boardRepository.findByBoardLoginId(form.getLoginId());
+    for (Board board : boardList) {
+      board.setMember(deletedMember);
     }
     memberRepository.delete(findMember);
   }

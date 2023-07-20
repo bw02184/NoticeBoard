@@ -27,6 +27,13 @@ public class BoardRepository {
     em.remove(board);
   }
 
+  public List<Board> findByBoardLoginId(String loginId) {
+    return em.createQuery(
+            "select b from Board b join fetch b.member m where m.loginId = :loginId", Board.class)
+        .setParameter("loginId", loginId)
+        .getResultList();
+  }
+
   public List<Board> findByRealName(String realName) {
     return em.createQuery(
             "select b from Board b" + " join fetch b.member m" + " where m.realName = :realName",
