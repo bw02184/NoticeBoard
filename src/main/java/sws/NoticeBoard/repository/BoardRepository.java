@@ -23,6 +23,10 @@ public class BoardRepository {
     return em.createQuery("select b from Board b", Board.class).getResultList();
   }
 
+  public void delete(Board board) {
+    em.remove(board);
+  }
+
   public List<Board> findByRealName(String realName) {
     return em.createQuery(
             "select b from Board b" + " join fetch b.member m" + " where m.realName = :realName",

@@ -29,7 +29,7 @@ border-color: #dc3545;
   <div th:replace="fragments/bodyHeader :: bodyHeader" />
   <div class="jumbotron">
     <h1>HELLO NoticeBoard</h1>
-    <p class="lead">회원 기능</p>
+    <p class="lead">게시판 저장하기</p>
     <!-- Include Quill stylesheet -->
     <link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet" />
 
@@ -72,8 +72,10 @@ border-color: #dc3545;
     });
 
     quill.on('text-change', function() {
-        document.getElementById("quill_html").value = quill.getText();
+        document.getElementById("quill_html").value = quill.root.innerHTML;
 });
+<!--quill.root.innerHTML;-->
+<!--quill.getText();-->
 <!--글자수 5000자 제한(넘길 시 글자 제거)-->
 const maxLength = 5000
 

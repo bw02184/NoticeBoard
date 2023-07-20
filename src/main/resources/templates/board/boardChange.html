@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header">
-  <title>Hello</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
 <style>
@@ -24,41 +24,50 @@ color: #dc3545;
 border-color: #dc3545;
     color: #dc3545;
 }
+
 </style>
 <div class="container">
-  <div th:replace="fragments/bodyHeader :: bodyHeader" />
-  <div class="jumbotron">
-    <h1>HELLO NoticeBoard</h1>
-    <p class="lead">회원 기능</p>
-    <!-- Include Quill stylesheet -->
-    <link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet" />
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <div class="jumbotron">
+        <h1>HELLO NoticeBoard</h1>
+        <p class="lead">게시판 수정하기</p>
+        <!-- Include Quill stylesheet -->
+        <link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet"/>
 
-    <div id="form-container" class="container">
-      <form th:action="@{|/board/list/*{id}/change|}" th:object="${boardForm}" method="POST">
-        <div th:if="${#fields.hasGlobalErrors()}">
-          <p class="fieldError" th:each="err : ${#fields.globalErrors()}"
-             th:text="${err}">전체 오류 메시지</p>
+        <div id="form-container" class="container">
+            <form th:action="@{|/board/list/*{id}/change|}" th:object="${boardForm}" method="POST">
+                <div th:if="${#fields.hasGlobalErrors()}">
+                    <p class="fieldError" th:each="err : ${#fields.globalErrors()}"
+                       th:text="${err}">전체 오류 메시지</p>
+                </div>
+
+                <div align="right">
+                    <button class="my_btn" type="submit">저장</button>
+                </div>
+
+                <input type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" id="title"
+                       name="title" th:errorclass="fieldError">
+                <div class="field-error" th:errors="*{title}"/>
+
+                <!-- Create the editor container -->
+                <div id="editor-container">
+                    <p th:utext="*{content}"></p>
+                </div>
+                <input type="hidden" th:field="*{content}" class="form-control" id="content" name="content">
+            </form>
+            <div align="right">
+<!--              "|location.href='@{/board/list/{id}/delete(id=${boardForm.id})}'|"-->
+                <button class="my_btn" th:onclick="deleteCheck()">
+                    삭제
+                </button>
+            </div>
         </div>
 
-        <div align="right">
-          <button class="my_btn" type="submit">저장</button>
-          <input type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" id="title" name="title" th:errorclass="fieldError">
-          <div class="field-error" th:errors="*{title}" />
+        <!-- Include the Quill library -->
+        <script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
 
-        </div>
-        <!-- Create the editor container -->
-        <div  id="editor-container">
-        </div>
-        <input type="hidden" th:field="*{content}" class="form-control" id="content" name="content">
-
-      </form>
-    </div>
-
-    <!-- Include the Quill library -->
-    <script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
-
-    <!-- Initialize Quill editor -->
-    <script>
+        <!-- Initialize Quill editor -->
+        <script>
     const content = document.getElementById('content').value;
     var quill = new Quill('#editor-container', {
     modules: {
@@ -72,11 +81,11 @@ border-color: #dc3545;
     theme: 'snow'  // or 'bubble'
     });
 
-    const selection = quill.getSelection(true)
-    quill.insertText(selection.index, content) // 셀렉션 위치
+<!--    const selection = quill.getSelection(true)-->
+<!--    quill.insertText(selection.index, content) // 셀렉션 위치-->
 
     quill.on('text-change', function() {
-        document.getElementById("content").value = quill.getText();
+        document.getElementById("content").value = quill.root.innerHTML;
 });
 
 <!--글자수 5000자 제한(넘길 시 글자 제거)-->
@@ -88,10 +97,22 @@ quill.on('editor-change', e => {
 })
 
 
-</script>
+function deleteCheck() {
+ if (confirm("정말 삭제하시겠습니까??") == true){    //확인
+ const param = [[${boardForm.id}]];
+  let f = document.createElement('form');
+    f.setAttribute('method', 'post');
+    f.setAttribute('action', "/board/list/"+param+"/delete");
+    document.body.appendChild(f);
+    f.submit();
+ }else{   //취소
+     return false;
+ }
+}
+        </script>
 
-  </div>
-  <div th:replace="fragments/footer :: footer" />
+    </div>
+    <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->
 </body>
 </html>

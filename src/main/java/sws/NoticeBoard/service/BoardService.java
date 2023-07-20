@@ -48,4 +48,9 @@ public class BoardService {
     findBoard.setTitle(form.getTitle());
     findBoard.setContent(form.getContent());
   }
+
+  public void delete(Long id) {
+    Board findBoard = boardRepository.findById(id);
+    boardRepository.delete(findBoard);
+  }
 }

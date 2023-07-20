@@ -1,6 +1,7 @@
 package sws.NoticeBoard.controller;
 
 import java.util.List;
+import java.util.Objects;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -109,5 +110,14 @@ public class BoardController {
     boardService.update(form);
 
     return "redirect:/board/list";
+  }
+
+  @PostMapping("/board/list/{id}/delete")
+  public String boardDelete(@ModelAttribute BoardForm form, @PathVariable("id") Long id) {
+    // url 조작을 방지하기 위해서 form.id와 PathVariable id를 비교한다.
+    if (Objects.equals(form.getId(), id)) {
+      boardService.delete(id);
+      return "redirect:/board/list";
+    } else return "redirect:/";
   }
 }

@@ -29,7 +29,7 @@ border-color: #dc3545;
   <div th:replace="fragments/bodyHeader :: bodyHeader" />
   <div class="jumbotron">
     <h1>HELLO NoticeBoard</h1>
-    <p class="lead">회원 기능</p>
+    <p class="lead">게시판 보기</p>
     <!-- Include Quill stylesheet -->
     <link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet" />
 
@@ -39,7 +39,9 @@ border-color: #dc3545;
           <input type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" readonly id="title" name="title" th:errorclass="fieldError">
         </div>
         <!-- Create the editor container -->
-        <div  id="editor-container" aria-readonly="true"></div>
+        <div  id="editor-container" aria-readonly="true">
+          <p th:utext="*{content}"></p>
+        </div>
         <input type="hidden" th:field="*{content}" class="form-control" id="content" name="content">
 
       </div>
