@@ -19,8 +19,12 @@ public class BoardRepository {
     return em.find(Board.class, id);
   }
 
-  public List<Board> findByAll() {
-    return em.createQuery("select b from Board b", Board.class).getResultList();
+  public List<Board> findByAllList(int first, int last) {
+    return em.createQuery(
+            "select b from Board b join fetch b.member m order by b.id desc", Board.class)
+        .setFirstResult(first)
+        .setMaxResults(last)
+        .getResultList();
   }
 
   public void delete(Board board) {

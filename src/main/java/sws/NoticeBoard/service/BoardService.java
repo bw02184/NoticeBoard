@@ -3,11 +3,17 @@ package sws.NoticeBoard.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sws.NoticeBoard.controller.form.BoardForm;
+import sws.NoticeBoard.controller.form.PageRequestDTO;
+import sws.NoticeBoard.controller.form.PageResultDTO;
 import sws.NoticeBoard.domain.Board;
 import sws.NoticeBoard.domain.Member;
+import sws.NoticeBoard.repository.BoardJpaRepository;
 import sws.NoticeBoard.repository.BoardRepository;
 import sws.NoticeBoard.repository.MemberRepository;
 
@@ -17,6 +23,7 @@ import sws.NoticeBoard.repository.MemberRepository;
 @Transactional
 public class BoardService {
   private final BoardRepository boardRepository;
+  private final BoardJpaRepository boardJpaRepository;
   private final MemberRepository memberRepository;
 
   public void save(BoardForm form, String loginId) {
@@ -30,8 +37,8 @@ public class BoardService {
     boardRepository.save(board);
   }
 
-  public List<Board> findByAll() {
-    return boardRepository.findByAll();
+  public List<Board> findByAll(int first, int last) {
+    return boardRepository.findByAllList(first, last);
   }
 
   public Board findById(Long id) {
@@ -52,5 +59,12 @@ public class BoardService {
   public void delete(Long id) {
     Board findBoard = boardRepository.findById(id);
     boardRepository.delete(findBoard);
+  }
+
+  public PageResultDTO<BoardForm, Board> getList(PageRequestDTO requestDTO) {
+    Pageable pageable = requestDTO.getPageable(Sort.by("id").descending());
+    log.info("pageable={}", pageable);
+    Page<Board> result = boardJpaRepository.findAll(pageable);
+    return new PageResultDTO<>(result);
   }
 }

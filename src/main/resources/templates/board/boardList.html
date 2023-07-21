@@ -1,38 +1,69 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header" />
+<head th:replace="fragments/header :: header"/>
 <body>
+<style>
+   .my_btn {
+	  background-color: Lightslategray;
+	  color: white;
+	  border: none;
+	  width: 100px;
+	  height: 30px;
+	}
+
+</style>
 <div class="container">
-  <div th:replace="fragments/bodyHeader :: bodyHeader" />
-  <div>
-    <table class="table table-striped">
-      <thead>
-      <tr style="text-align:center">
-        <th>번호</th>
-        <th>제목</th>
-        <th>글쓴이</th>
-        <th>작성일</th>
-        <th>조회</th>
-        <th>수정</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="form : ${boards}">
-        <td th:text="${form.id}" th:onclick="|location.href='@{/board/list/{id}(id=${form.id})}'|"></td>
-        <td th:text="${form.title}" th:onclick="|location.href='@{/board/list/{id}(id=${form.id})}'|"></td>
-        <td th:text="${form.member?.realName}"></td>
-        <td th:text="${#temporals.format(form.create_at,'yyyy년 MM월 dd일 HH시 mm분')}"></td>
-        <td th:text="${form.viewCount}"></td>
-        <td>
-          <a th:if="${session.loginMember?.loginId == form.member?.loginId}" href="#"
-             th:href="@{|/board/list/${form.id}/change|}"
-             class="btn btn-danger">수정</a>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
-  <div th:replace="fragments/footer :: footer" />
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <div>
+        <div align="right">
+            <button class="my_btn" th:onclick="|location.href='@{/board/save}'|">글쓰기</button>
+        </div>
+        <table class="table table-striped">
+            <thead>
+            <tr style="text-align:center">
+                <th>번호</th>
+                <th>제목</th>
+                <th>글쓴이</th>
+                <th>작성일</th>
+                <th>조회</th>
+                <th>수정</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="form : ${result.dtoList}">
+                <td th:text="${form.id}" th:onclick="|location.href='@{/board/list/{id}(id=${form.id})}'|"></td>
+                <td th:text="${form.title}" th:onclick="|location.href='@{/board/list/{id}(id=${form.id})}'|"></td>
+                <td th:text="${form.member?.realName}"></td>
+                <td th:text="${#temporals.format(form.create_at,'yyyy년 MM월 dd일 HH시 mm분')}"></td>
+                <td th:text="${form.viewCount}"></td>
+                <td>
+                    <a th:if="${session.loginMember?.loginId == form.member?.loginId}" href="#"
+                       th:href="@{|/board/list/${form.id}/change|}"
+                       class="btn btn-danger">수정</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <ul class="pagination h-100 justify-content-center align-items-center">
+
+            <li class="page-item " th:if="${result.prev}">
+                <a class="page-link" th:href="@{/board/list(page= ${result.start -1}) }" tabindex="-1">Previous</a>
+            </li>
+
+            <li th:class=" 'page-item ' + ${result.page == page?'active':''} " th:each="page: ${result.pageList}">
+                <a class="page-link" th:href="@{/board/list(page = ${page})}">
+                    [[${page}]]
+                </a>
+            </li>
+
+            <li class="page-item" th:if="${result.next}">
+                <a class="page-link" th:href="@{/board/list(page= ${result.end + 1})}">Next</a>
+            </li>
+
+        </ul>
+    </div>
+    <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->
 </body>
 </html>

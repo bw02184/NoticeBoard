@@ -1,6 +1,5 @@
 package sws.NoticeBoard.controller;
 
-import java.util.List;
 import java.util.Objects;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import sws.NoticeBoard.controller.form.BoardForm;
+import sws.NoticeBoard.controller.form.PageRequestDTO;
 import sws.NoticeBoard.domain.Board;
 import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.service.BoardService;
@@ -46,10 +46,17 @@ public class BoardController {
     return "redirect:/board/list";
   }
 
+  //  @GetMapping("/board/list")
+  //  public String boardList(Model model) {
+  //    List<Board> boards = boardService.findByAll();
+  //    model.addAttribute("boards", boards);
+  //    return "board/boardList";
+  //  }
+
   @GetMapping("/board/list")
-  public String boardList(Model model) {
-    List<Board> boards = boardService.findByAll();
-    model.addAttribute("boards", boards);
+  public String boardList(PageRequestDTO pageRequestDTO, Model model) {
+    log.info("list..............................." + pageRequestDTO);
+    model.addAttribute("result", boardService.getList(pageRequestDTO));
     return "board/boardList";
   }
 
@@ -94,6 +101,9 @@ public class BoardController {
   @GetMapping("/board/list/{id}/change")
   public String boardChange(@ModelAttribute BoardForm form, @PathVariable("id") Long id) {
     Board findBoard = boardService.findById(id);
+    if (findBoard == null) {
+      return "redirect:/board/list";
+    }
     form.setId(findBoard.getId());
     form.setTitle(findBoard.getTitle());
     form.setContent(findBoard.getContent());
