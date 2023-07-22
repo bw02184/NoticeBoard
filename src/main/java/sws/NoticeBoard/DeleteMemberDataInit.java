@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import sws.NoticeBoard.domain.Member;
+import sws.NoticeBoard.repository.MemberRepository;
 
 @Component
 @RequiredArgsConstructor
@@ -22,8 +23,13 @@ public class DeleteMemberDataInit {
   @RequiredArgsConstructor
   static class InitService {
     private final EntityManager em;
+    private final MemberRepository memberRepository;
 
     public void dbInit1() {
+      Member findMember = memberRepository.findByLoginId("deleted");
+      if (findMember != null) {
+        return;
+      }
       Member member = new Member();
       member.setRealName("탈퇴회원");
       member.setLoginId("deleted");

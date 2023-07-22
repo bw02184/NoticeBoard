@@ -62,16 +62,15 @@ public class BoardController {
 
   @GetMapping("/board/list/{id}")
   public String boardInfo(
-      @ModelAttribute BoardForm form,
       @PathVariable("id") Long id,
       HttpServletRequest request,
-      HttpServletResponse response) {
+      HttpServletResponse response,
+      Model model) {
     Board findBoard = boardService.findById(id);
     setCookie(id, request, response);
-    form.setContent(findBoard.getContent());
-    form.setTitle(findBoard.getTitle());
+    model.addAttribute("post", findBoard);
 
-    return "board/boardInfo";
+    return "board/newBoardInfo";
   }
 
   private void setCookie(Long id, HttpServletRequest request, HttpServletResponse response) {

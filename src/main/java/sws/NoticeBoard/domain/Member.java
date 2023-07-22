@@ -33,6 +33,9 @@ public class Member {
   @OneToMany(mappedBy = "member")
   private List<Board> boards = new ArrayList<>();
 
+  @OneToMany(mappedBy = "member")
+  private List<Comment> comments = new ArrayList<>();
+
   @NotEmpty @Email private String email;
 
   @CreatedDate
