@@ -14,6 +14,7 @@ import sws.NoticeBoard.controller.form.MemberSearchPwChangeForm;
 import sws.NoticeBoard.domain.Board;
 import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.repository.BoardRepository;
+import sws.NoticeBoard.repository.CommentRepository;
 import sws.NoticeBoard.repository.MemberRepository;
 
 @Slf4j
@@ -23,6 +24,7 @@ import sws.NoticeBoard.repository.MemberRepository;
 public class MemberService {
   private final MemberRepository memberRepository;
   private final BoardRepository boardRepository;
+  private final CommentRepository commentRepository;
   private final PasswordEncoder passwordEncoder;
 
   public Member MemberSearch(String loginId) {
@@ -103,6 +105,7 @@ public class MemberService {
     for (Board board : boardList) {
       board.setMember(deletedMember);
     }
+    commentRepository.deleteByMemberLoginId(findMember.getLoginId());
     memberRepository.delete(findMember);
   }
 }

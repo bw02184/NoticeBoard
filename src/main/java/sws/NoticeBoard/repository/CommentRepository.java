@@ -46,4 +46,14 @@ public class CommentRepository {
         .setParameter("boardId", boardId)
         .executeUpdate();
   }
+
+  public int deleteByMemberLoginId(String loginId) {
+    return em.createQuery(
+            "DELETE FROM Comment c"
+                + " WHERE c.member IN"
+                + " (SELECT m FROM Member m"
+                + " WHERE m.loginId = :loginId)")
+        .setParameter("loginId", loginId)
+        .executeUpdate();
+  }
 }
