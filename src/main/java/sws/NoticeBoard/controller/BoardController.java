@@ -98,7 +98,8 @@ public class BoardController {
   }
 
   @GetMapping("/board/list/{id}/change")
-  public String boardChange(@ModelAttribute BoardForm form, @PathVariable("id") Long id) {
+  public String boardChange(
+      @ModelAttribute BoardForm form, @PathVariable("id") Long id, Model model) {
     Board findBoard = boardService.findById(id);
     if (findBoard == null) {
       return "redirect:/board/list";
@@ -106,26 +107,36 @@ public class BoardController {
     form.setId(findBoard.getId());
     form.setTitle(findBoard.getTitle());
     form.setContent(findBoard.getContent());
-    return "board/boardChange";
+    model.addAttribute("post", findBoard);
+    return "board/newBoardChange";
   }
 
   @PostMapping("/board/list/{id}/change")
   public String boardChange(
-      @Validated @ModelAttribute BoardForm form, BindingResult bindingResult) {
+      @Validated @ModelAttribute BoardForm form,
+      BindingResult bindingResult,
+      @PathVariable("id") Long id,
+      Model model,
+      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
     if (bindingResult.hasErrors()) {
-      return "board/boardChange";
+      Board findBoard = boardService.findById(id);
+      model.addAttribute("post", findBoard);
+      return "board/newBoardChange";
     }
     log.info("{}{}{}", form.getId(), form.getTitle(), form.getContent());
-    boardService.update(form);
+    boardService.update(form, loginMember.getLoginId());
 
     return "redirect:/board/list";
   }
 
   @PostMapping("/board/list/{id}/delete")
-  public String boardDelete(@ModelAttribute BoardForm form, @PathVariable("id") Long id) {
+  public String boardDelete(
+      @ModelAttribute BoardForm form,
+      @PathVariable("id") Long id,
+      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
     // url 조작을 방지하기 위해서 form.id와 PathVariable id를 비교한다.
     if (Objects.equals(form.getId(), id)) {
-      boardService.delete(id);
+      boardService.delete(id, loginMember.getLoginId());
       return "redirect:/board/list";
     } else return "redirect:/";
   }

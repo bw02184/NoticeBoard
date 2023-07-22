@@ -15,6 +15,7 @@ import sws.NoticeBoard.domain.Board;
 import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.repository.BoardJpaRepository;
 import sws.NoticeBoard.repository.BoardRepository;
+import sws.NoticeBoard.repository.CommentRepository;
 import sws.NoticeBoard.repository.MemberRepository;
 
 @Slf4j
@@ -25,6 +26,7 @@ public class BoardService {
   private final BoardRepository boardRepository;
   private final BoardJpaRepository boardJpaRepository;
   private final MemberRepository memberRepository;
+  private final CommentRepository commentRepository;
 
   public void save(BoardForm form, String loginId) {
     Member findmember = memberRepository.findByLoginId(loginId);
@@ -50,14 +52,20 @@ public class BoardService {
     findBoard.setViewCount(findBoard.getViewCount() + 1);
   }
 
-  public void update(BoardForm form) {
+  public void update(BoardForm form, String loginId) {
     Board findBoard = boardRepository.findById(form.getId());
+    Member findMember = memberRepository.findByLoginId(loginId);
+    if (findMember == null || !findMember.equals(findBoard.getMember())) return;
     findBoard.setTitle(form.getTitle());
     findBoard.setContent(form.getContent());
   }
 
-  public void delete(Long id) {
+  public void delete(Long id, String loginId) {
     Board findBoard = boardRepository.findById(id);
+    Member findMember = memberRepository.findByLoginId(loginId);
+    if (findMember == null || !findMember.equals(findBoard.getMember())) return;
+    int deleteCount = commentRepository.deleteByBoardId(id);
+    log.info("BoardId={}일때 Comments 삭제횟수={}", id, deleteCount);
     boardRepository.delete(findBoard);
   }
 

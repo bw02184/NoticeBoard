@@ -40,4 +40,10 @@ public class CommentRepository {
   public void delete(Comment comment) {
     em.remove(comment);
   }
+
+  public int deleteByBoardId(Long boardId) {
+    return em.createQuery("delete from Comment c where c.board.id = :boardId")
+        .setParameter("boardId", boardId)
+        .executeUpdate();
+  }
 }
