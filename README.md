@@ -1,4 +1,4 @@
-# NoticeBoard
+# NoticeBoard(개인 프로젝트)
 안녕하세요!
 NoticeBoard는 저만의 게시판을 만들어 본 프로젝트 입니다. 주요기능으로 게시판 작성기능과 댓글작성 기능이 있습니다. 
 
@@ -10,7 +10,7 @@ NoticeBoard는 저만의 게시판을 만들어 본 프로젝트 입니다. 주�
 
 ### 스킬
 
-SpringBoot 2.7.13, JPA, Themleaf, aws beanstalk, git action
+ <img src="https://img.shields.io/badge/springboot 2.7.13-6DB33F?style=flat&logo=springboot&logoColor=white"/>  <img src="https://img.shields.io/badge/JPA-blue?style=flat"/> <img src="https://img.shields.io/badge/thymeleaf-black?style=flat&logo=thymeleaf&logoColor=005F0F"/> <img src="https://img.shields.io/badge/Elastic Beanstalk-yellow?style=flat&logo=amazonaws&logoColor=#232F3E"/> <img src="https://img.shields.io/badge/githubactions-red?style=flat&logo=githubactions&logoColor=2088FF"/>
 
 ### 구조
 ~~~
