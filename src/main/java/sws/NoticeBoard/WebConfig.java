@@ -33,6 +33,7 @@ public class WebConfig implements WebMvcConfigurer {
             "/css/**",
             "/*ico",
             "/emailCheck.js",
+            "/js/jquery-3.6.0.min.js",
             "/error");
   }
 }
