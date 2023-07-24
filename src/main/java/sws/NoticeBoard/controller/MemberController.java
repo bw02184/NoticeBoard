@@ -42,7 +42,7 @@ public class MemberController {
     form.setEmail(member.getEmail());
     form.setLoginId(member.getLoginId());
     model.addAttribute("memberUpdateForm", form);
-    return "/member/memberInfo";
+    return "member/memberInfo";
   }
 
   @PostMapping("/member/update")
@@ -52,7 +52,7 @@ public class MemberController {
       @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
       @RequestParam(defaultValue = "/") String redirectURL) {
     if (bindingResult.hasErrors()) {
-      return "/member/memberInfo";
+      return "member/memberInfo";
     }
     try {
       memberService.memberInfoUpdate(
@@ -63,7 +63,7 @@ public class MemberController {
           form.getEmailConfirm());
     } catch (IllegalStateException e) {
       bindingResult.reject("emailCheck", e.getMessage());
-      return "/member/memberInfo";
+      return "member/memberInfo";
     }
     return "redirect:" + redirectURL;
   }
@@ -71,7 +71,7 @@ public class MemberController {
   @GetMapping("/member/password")
   public String memberPassword(@ModelAttribute MemberPwUpdateForm form) {
     log.info("memberPWUpdateForm");
-    return "/member/memberPWUpdate";
+    return "member/memberPWUpdate";
   }
 
   @PostMapping("/member/password/update")
@@ -82,35 +82,35 @@ public class MemberController {
       @RequestParam(defaultValue = "/") String redirectURL) {
     if (bindingResult.hasErrors()) {
       log.info("에러로 인한 이동");
-      return "/member/memberPWUpdate";
+      return "member/memberPWUpdate";
     }
     form.setLoginId(loginMember.getLoginId());
     try {
       memberService.memberPWUpdate(form);
     } catch (IllegalStateException e) {
       bindingResult.reject("pwCheck", e.getMessage());
-      return "/member/memberPWUpdate";
+      return "member/memberPWUpdate";
     }
     return "redirect:" + redirectURL;
   }
 
   @GetMapping("/member/id/find")
   public String memberId(@ModelAttribute MemberIdFindForm form) {
-    return "/member/memberIdFind";
+    return "member/memberIdFind";
   }
 
   @PostMapping("/member/id/find")
   public String memberIdFind(
       @Validated @ModelAttribute MemberIdFindForm form, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
-      return "/member/memberIdFind";
+      return "member/memberIdFind";
     }
     String loginId = "";
     try {
       loginId = memberService.memberIdFind(form);
     } catch (IllegalStateException e) {
       bindingResult.reject("emailCheck", e.getMessage());
-      return "/member/memberIdFind";
+      return "member/memberIdFind";
     }
     return "redirect:/member/findId?loginId=" + loginId;
   }
@@ -118,12 +118,12 @@ public class MemberController {
   @GetMapping("/member/findId")
   public String findId(@RequestParam String loginId, Model model) {
     model.addAttribute("loginId", loginId);
-    return "/member/findId";
+    return "member/findId";
   }
 
   @GetMapping("/member/password/find")
   public String memberPassword(@ModelAttribute MemberPwFindForm form) {
-    return "/member/memberPwFind";
+    return "member/memberPwFind";
   }
 
   @PostMapping("/member/password/find")
@@ -132,14 +132,14 @@ public class MemberController {
       BindingResult bindingResult,
       RedirectAttributes redirectAttributes) {
     if (bindingResult.hasErrors()) {
-      return "/member/memberPwFind";
+      return "member/memberPwFind";
     }
     Member member;
     try {
       member = memberService.memberPwFind(form);
     } catch (IllegalStateException e) {
       bindingResult.reject("pwFindCheck", e.getMessage());
-      return "/member/memberPwFind";
+      return "member/memberPwFind";
     }
     redirectAttributes.addFlashAttribute("member", member);
     return "redirect:/member/searchPw/change";
@@ -149,23 +149,23 @@ public class MemberController {
   public String memberSearchPassword(
       @ModelAttribute MemberSearchPwChangeForm form, @ModelAttribute("member") Member member) {
     form.setLoginId(member.getLoginId());
-    return "/member/memberSearchPwChange";
+    return "member/memberSearchPwChange";
   }
 
   @PostMapping("/member/searchPw/change")
   public String memberSearchPasswordChange(
       @Validated @ModelAttribute MemberSearchPwChangeForm form, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
-      return "/member/memberSearchPwChange";
+      return "member/memberSearchPwChange";
     }
     try {
       memberService.memberSearchPwChange(form);
     } catch (IllegalStateException e) {
       bindingResult.reject("pwCheck", e.getMessage());
-      return "/member/memberSearchPwChange";
+      return "member/memberSearchPwChange";
     } catch (RuntimeException e) {
       log.info("비밀번호 변경 중 오류가 발생했습니다. 다시 실행해 주세요", e);
-      return "/home";
+      return "home";
     }
     return "redirect:/";
   }
@@ -175,7 +175,7 @@ public class MemberController {
       @ModelAttribute MemberDeleteForm form,
       @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
     form.setLoginId(loginMember.getLoginId());
-    return "/member/memberDelete";
+    return "member/memberDelete";
   }
 
   @PostMapping("/member/delete")
@@ -187,13 +187,13 @@ public class MemberController {
     // form 화면에서 강제로 아이디를 변경했을 경우를 대비해서 세션에서 로그인 아이디를 얻어 와서 form 데이터에 넣어준다.
     form.setLoginId(loginMember.getLoginId());
     if (bindingResult.hasErrors()) {
-      return "/member/memberDelete";
+      return "member/memberDelete";
     }
     try {
       memberService.memberDelete(form);
     } catch (IllegalStateException e) {
       bindingResult.reject("pwCheck", e.getMessage());
-      return "/member/memberDelete";
+      return "member/memberDelete";
     }
     // 로그아웃
     HttpSession session = request.getSession(false);

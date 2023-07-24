@@ -17,9 +17,11 @@ public class MemberDataInit {
   @PostConstruct
   public void init() {
     initService.dbInit1();
+    initService.dbInit2();
+    initService.dbInit3();
   }
 
-  /** 탈퇴회원 전용 데이터 추가 */
+  /** 전용 데이터 추가 */
   @Component
   @Transactional
   @RequiredArgsConstructor
@@ -36,11 +38,13 @@ public class MemberDataInit {
       Member member = new Member();
       member.setRealName("탈퇴회원");
       member.setLoginId("deleted");
-      member.setPassword("deleted"); // 일부러 passwordEncoder 미사용(로그인 되지 않도록 하기 위해)
+      member.setPassword(passwordEncoder.encode("deleted"));
       member.setEmail("delete@delete.sws");
       member.setIsAdmin(false);
       em.persist(member);
+    }
 
+    public void dbInit2() {
       Member findMember1 = memberRepository.findByLoginId("test");
       if (findMember1 != null) {
         return;
@@ -48,12 +52,13 @@ public class MemberDataInit {
       Member member1 = new Member();
       member1.setRealName("sws");
       member1.setLoginId("test");
-      member1.setPassword(
-          passwordEncoder.encode("test")); // 일부러 passwordEncoder 미사용(로그인 되지 않도록 하기 위해)
+      member1.setPassword(passwordEncoder.encode("test"));
       member1.setEmail("sws@sws.sws");
       member1.setIsAdmin(false);
       em.persist(member1);
+    }
 
+    public void dbInit3() {
       Member findMember2 = memberRepository.findByLoginId("test2");
       if (findMember2 != null) {
         return;
