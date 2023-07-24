@@ -54,7 +54,7 @@ public class MemberDataInit {
       member1.setIsAdmin(false);
       em.persist(member1);
 
-      Member findMember2 = memberRepository.findByLoginId("test");
+      Member findMember2 = memberRepository.findByLoginId("test2");
       if (findMember2 != null) {
         return;
       }
