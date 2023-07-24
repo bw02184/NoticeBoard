@@ -11,7 +11,7 @@
 
 ### 스킬
 
- <img src="https://img.shields.io/badge/springboot 2.7.13-6DB33F?style=flat&logo=springboot&logoColor=white"/>  <img src="https://img.shields.io/badge/JPA-blue?style=flat"/> <img src="https://img.shields.io/badge/thymeleaf-black?style=flat&logo=thymeleaf&logoColor=005F0F"/> <img src="https://img.shields.io/badge/Elastic Beanstalk-yellow?style=flat&logo=amazonaws&logoColor=#232F3E"/> <img src="https://img.shields.io/badge/githubactions-red?style=flat&logo=githubactions&logoColor=2088FF"/>
+ <img src="https://img.shields.io/badge/springboot 2.7.13-6DB33F?style=flat&logo=springboot&logoColor=white"/>  <img src="https://img.shields.io/badge/JPA-blue?style=flat"/> <img src="https://img.shields.io/badge/thymeleaf-black?style=flat&logo=thymeleaf&logoColor=005F0F"/> <img src="https://img.shields.io/badge/Elastic Beanstalk-yellow?style=flat&logo=amazonaws&logoColor=#232F3E"/> <img src="https://img.shields.io/badge/GitHub Actions-red?style=flat&logo=githubactions&logoColor=2088FF"/>
 
 ### 구조
 ~~~
@@ -79,6 +79,10 @@
 - 댓글 수정하기 - 작성한 사람만 수정 가능
 - 댓글 삭제하기 - 작성한 사람만 수정 가능
 
+### 테스트 계정
+1. ID : test  /  PW : test
+2. ID : test2 / PW : test2
+
 ### ERD
 
 ![erd](https://github.com/bw02184/NoticeBoard/assets/102367393/89da8996-71d9-49cc-b03c-491475af86b4)
@@ -105,4 +109,4 @@
 - MAC OS와 Windows OS의 개행 방식 차이에 따라 개행문자 변경해 주는 dos2unix설치 후 gradlew 변경해 주는 과정을 더해 주었다.(windows 환경이기 때문에 추가했다.)
 
 ### 프로젝트 노션 링크
-https://responsible-cardigan-ecb.notion.site/NoticeBoard-e17c778ad569497083cd92ace2e3ba59?pvs=4
+- https://responsible-cardigan-ecb.notion.site/NoticeBoard-e17c778ad569497083cd92ace2e3ba59?pvs=4
