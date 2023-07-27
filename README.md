@@ -53,21 +53,21 @@
 
 비회원 기능
 
-- 로그인 기능 - `HttpSession` 이용
+- 로그인 기능 - `HttpSession` 사용
 - 회원 가입 기능 - 비밀 번호 저장 시 `passwordEncoder`  사용
 - 아이디 찾기 기능 - email 인증 기능 사용
 - 비밀번호 찾기 기능
 
 회원 기능(로그인 기능) - 인터셉터 사용
 
-- 로그아웃 - SpringSecurity 이용
+- 로그아웃 - SpringSecurity 사용
 - 회원 정보 변경
 - 비밀번호 변경
 - 회원 탈퇴하기 - 회원 탈퇴 시 게시판 글은 탈퇴회원으로 변경 처리, 댓글은 삭제 처리
 
 회원기능(게시판 기능)
 
-- 게시판 작성하기 -quill editor 이용
+- 게시판 작성하기 -quill editor 사용
 - 게시판 목록 보기 - 페이지네이션 적용
 - 게시판 수정하기 - 작성한 사람만 수정 가능
 - 게시판 삭제하기 - 작성한 사람만 삭제 가능
@@ -100,7 +100,7 @@
 ### .github/workflows/eb_docker_deploy.yml
 - 도커파일을 이용하여 빌드 후 AWS Beanstalk에 배포하는 yml파일이다.
 - 도커파일을 빌드해서 도커허브에 이미지파일을 올려놓으면 AWS상에서 도커허브의 이미지 파일을 이용해서 배포하는 방식이다.
-- ./src/main/resources/application.properties 에 중요한 정보(DB id, password 등)들이 많다고 생각되어 깃허브에서 삭제 후 깃 시크릿으르로 저장하여 다운 받는 방식을 사용하였다.
+- ./src/main/resources/application.properties 에 중요한 정보(DB id, password 등)들이 많다고 생각되어 깃허브에서 삭제 후 깃 시크릿으로 저장하여 다운 받는 방식을 사용하였다.
 -  Dockerfile과 Dockerrun.aws.json파일이 루트에 있어야 한다.
 -  관련 노션 링크 : https://responsible-cardigan-ecb.notion.site/EB-Docker-Deploy-31748ed4210e429d93859d778dd16dfa
 
