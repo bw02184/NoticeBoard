@@ -1,9 +1,9 @@
 package sws.NoticeBoard;
 
-import hello.login.web.interceptor.LogInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import sws.NoticeBoard.interceptor.LogInterceptor;
 import sws.NoticeBoard.interceptor.LoginCheckInterceptor;
 
 @Configuration

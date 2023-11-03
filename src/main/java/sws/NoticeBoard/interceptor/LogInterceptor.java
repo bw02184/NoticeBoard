@@ -1,14 +1,17 @@
-package hello.login.web.interceptor;
+package sws.NoticeBoard.interceptor;
 
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 @Slf4j
+@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class LogInterceptor implements HandlerInterceptor {
   public static final String LOG_ID = "logId";
 
@@ -24,7 +27,7 @@ public class LogInterceptor implements HandlerInterceptor {
       HandlerMethod hm = (HandlerMethod) handler; // 호출할 컨트롤러 매서드의 모든 정보가 포함되어 있다.
     }
 
-    log.info("REQUEST [{}][{}][{}]", uuid, requestURI, handler);
+    //    log.info("REQUEST [{}][{}][{}]", uuid, requestURI, handler);
     return true;
   }
 
@@ -35,7 +38,7 @@ public class LogInterceptor implements HandlerInterceptor {
       Object handler,
       ModelAndView modelAndView)
       throws Exception {
-    log.info("postHandle [{}]", modelAndView);
+    //    log.info("postHandle [{}]", modelAndView);
   }
 
   @Override
@@ -44,9 +47,9 @@ public class LogInterceptor implements HandlerInterceptor {
       throws Exception {
     String requestURI = request.getRequestURI();
     Object logId = request.getAttribute(LOG_ID);
-    log.info("RESPONSE [{}][{}][{}]", logId, requestURI, handler);
+    //    log.info("RESPONSE [{}][{}][{}]", logId, requestURI, handler);
     if (ex != null) {
-      log.error("afterCompletion error!!", ex);
+      //      log.error("afterCompletion error!!", ex);
     }
   }
 }
