@@ -21,7 +21,7 @@ public class CommentRepository {
 
   public List<Comment> findByAll(Long boardId) {
     return em.createQuery(
-            "select c from Comment c join fetch c.board b join fetch b.member where b.id=:boardId",
+            "select c from Comment c join  c.board b join  b.member where b.id=:boardId",
             Comment.class)
         .setParameter("boardId", boardId)
         .getResultList();
@@ -29,7 +29,7 @@ public class CommentRepository {
 
   public Comment findIds(Long bId, Long cId) {
     return em.createQuery(
-            "select c from Comment c join fetch c.board b join fetch b.member where b.id=:bId and"
+            "select c from Comment c join  c.board b join  b.member where b.id=:bId and"
                 + " c.id=:cId",
             Comment.class)
         .setParameter("bId", bId)
