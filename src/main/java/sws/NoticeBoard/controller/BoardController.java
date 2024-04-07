@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import sws.NoticeBoard.controller.form.BoardForm;
 import sws.NoticeBoard.controller.form.PageRequestDTO;
 import sws.NoticeBoard.domain.Board;
+import sws.NoticeBoard.domain.Grade;
 import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.service.BoardService;
 import sws.NoticeBoard.session.SessionConst;
@@ -135,7 +136,8 @@ public class BoardController {
       @PathVariable("id") Long id,
       @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
     // url 조작을 방지하기 위해서 form.id와 PathVariable id를 비교한다.
-    if (Objects.equals(form.getId(), id)) {
+    System.out.println("form = " + form);
+    if (loginMember.getGrade() == Grade.ADMIN || Objects.equals(form.getId(), id)) {
       boardService.delete(id, loginMember.getLoginId());
       return "redirect:/board/list";
     } else return "redirect:/";

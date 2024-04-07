@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sws.NoticeBoard.controller.form.MemberSaveForm;
+import sws.NoticeBoard.domain.Grade;
 import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.repository.MemberRepository;
 
@@ -45,7 +46,7 @@ public class LoginService {
     member.setEmail(form.getEmail());
     member.setPassword(passwordEncoder.encode(form.getPassword()));
     member.setRealName(form.getRealName());
-    member.setIsAdmin(false);
+    member.setGrade(Grade.NORMAL);
 
     memberRepository.save(member);
   }

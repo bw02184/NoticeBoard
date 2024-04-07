@@ -12,6 +12,7 @@ import sws.NoticeBoard.controller.form.BoardForm;
 import sws.NoticeBoard.controller.form.PageRequestDTO;
 import sws.NoticeBoard.controller.form.PageResultDTO;
 import sws.NoticeBoard.domain.Board;
+import sws.NoticeBoard.domain.Grade;
 import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.repository.BoardJpaRepository;
 import sws.NoticeBoard.repository.BoardRepository;
@@ -63,7 +64,7 @@ public class BoardService {
   public void delete(Long id, String loginId) {
     Board findBoard = boardRepository.findById(id);
     Member findMember = memberRepository.findByLoginId(loginId);
-    if (findMember == null || !findMember.equals(findBoard.getMember())) return;
+    if (findMember == null || (findMember.getGrade() == Grade.NORMAL && !findMember.equals(findBoard.getMember()))) return;
     int deleteCount = commentRepository.deleteByBoardId(id);
     log.info("BoardId={}일때 Comments 삭제횟수={}", id, deleteCount);
     boardRepository.delete(findBoard);

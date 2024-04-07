@@ -1,5 +1,4 @@
 # NoticeBoard(개인 프로젝트)
-링크 : http://noticeboard-env.eba-a3wuwng7.ap-northeast-2.elasticbeanstalk.com/
 
 안녕하세요! NoticeBoard는 저만의 게시판을 만들어 본 프로젝트 입니다. 주요기능으로 게시판 작성기능과 댓글작성 기능이 있습니다. 
 

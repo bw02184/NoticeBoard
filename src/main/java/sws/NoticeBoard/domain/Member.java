@@ -42,5 +42,5 @@ public class Member {
   @Column(updatable = false)
   private LocalDateTime createdAt;
 
-  private Boolean isAdmin;
+  private Grade grade;
 }
