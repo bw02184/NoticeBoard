@@ -1,6 +1,12 @@
 package sws.NoticeBoard.trace.logtrace;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import sws.NoticeBoard.session.SessionConst;
 import sws.NoticeBoard.trace.template.TraceId;
 import sws.NoticeBoard.trace.template.TraceStatus;
 
@@ -11,18 +17,19 @@ public class ThreadLocalLogTrace implements LogTrace {
   private static final String COMPLETE_PREFIX = "<--";
   private static final String EX_PREFIX = "<X-";
 
-  private ThreadLocal<TraceId> traceIdHolder = new ThreadLocal<>();
   private String message;
 
   @Override
   public TraceStatus begin(String message) {
     this.message = message;
     syncTraceId();
-    TraceId traceId = traceIdHolder.get();
-    Long startTimeMs = System.currentTimeMillis();
-    log.info("[{}] {}{}", traceId.getId(), addSpace(START_PREFIX, traceId.getLevel()), message);
+    String traceId = MDC.get("traceId");
+    TraceId traceId1 = new TraceId(traceId.split("\\.")[1], Integer.parseInt(traceId.split("\\.")[0]));
 
-    return new TraceStatus(traceId, startTimeMs, message);
+    Long startTimeMs = System.currentTimeMillis();
+    log.info("[{}] {}{}", traceId1.getId(), addSpace(START_PREFIX, traceId1.getLevel()), message);
+
+    return new TraceStatus(traceId1, startTimeMs, message);
   }
 
   @Override
@@ -58,23 +65,39 @@ public class ThreadLocalLogTrace implements LogTrace {
 
     releaseTraceId();
   }
+  private Object getSession(){
+    ServletRequestAttributes servletRequestAttribute = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+    Object attribute = null;
+    if(servletRequestAttribute != null) {
+      attribute = servletRequestAttribute.getAttribute(SessionConst.LOGIN_MEMBER, RequestAttributes.SCOPE_SESSION);
+    }
+    return attribute;
+  }
 
   private void syncTraceId() {
-    TraceId traceId = traceIdHolder.get();
+    String traceId = MDC.get("traceId");
     if (traceId == null) {
-      traceIdHolder.set(new TraceId());
+      TraceId traceId1 = new TraceId();
+      MDC.put("traceId", traceId1.getMdcStr());
     } else {
-      traceIdHolder.set(traceId.createNextId());
+      TraceId traceId1 = new TraceId(traceId.split("\\.")[1], Integer.parseInt(traceId.split("\\.")[0]));
+      TraceId nextId = traceId1.createNextId();
+      MDC.put("traceId", nextId.getMdcStr());
     }
   }
 
   private void releaseTraceId() {
-    TraceId traceId = traceIdHolder.get();
-    if (traceId.isFirstLevel()) {
-      traceIdHolder.remove(); // destroy
+    Object session = getSession();
+    String traceId = MDC.get("traceId");
+    TraceId traceId1 = new TraceId(traceId.split("\\.")[1], Integer.parseInt(traceId.split("\\.")[0]));
+    if (traceId1.isFirstLevel()) {
+      System.out.println("MDC clear");
+      MDC.clear();
     } else {
-      traceIdHolder.set(traceId.createPreviousId());
+      TraceId previousId = traceId1.createPreviousId();
+      MDC.put("traceId", previousId.getMdcStr());
     }
+
   }
 
   private static String addSpace(String prefix, int level) {

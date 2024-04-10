@@ -6,15 +6,18 @@ public class TraceId {
 
   private String id;
   private int level;
+  private String mdcStr;
 
   public TraceId() {
     this.id = createId();
     this.level = 0;
+    this.mdcStr = level+"."+id;
   }
 
-  private TraceId(String id, int level) {
+  public TraceId(String id, int level) {
     this.id = id;
     this.level = level;
+    this.mdcStr = level+"."+id;
   }
 
   private String createId() {
@@ -39,5 +42,9 @@ public class TraceId {
 
   public int getLevel() {
     return level;
+  }
+
+  public String getMdcStr() {
+    return mdcStr;
   }
 }

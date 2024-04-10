@@ -11,7 +11,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 @Slf4j
-@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class LogInterceptor implements HandlerInterceptor {
   public static final String LOG_ID = "logId";
 

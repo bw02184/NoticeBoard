@@ -1,7 +1,6 @@
 package sws.NoticeBoard.trace.aspect;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import sws.NoticeBoard.trace.logtrace.LogTrace;
 import sws.NoticeBoard.trace.logtrace.ThreadLocalLogTrace;
 
@@ -16,4 +15,5 @@ public class AopConfig {
   public LogTraceAspect logTraceAspect(LogTrace logTrace) {
     return new LogTraceAspect(logTrace);
   }
+
 }
