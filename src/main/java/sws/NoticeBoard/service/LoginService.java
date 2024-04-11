@@ -10,6 +10,9 @@ import sws.NoticeBoard.domain.Grade;
 import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.repository.MemberRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @Transactional
 @Service
@@ -47,6 +50,9 @@ public class LoginService {
     member.setPassword(passwordEncoder.encode(form.getPassword()));
     member.setRealName(form.getRealName());
     member.setGrade(Grade.NORMAL);
+    List<String> roles = new ArrayList<>();
+    roles.add("USER");
+    member.setRoles(roles);
 
     memberRepository.save(member);
   }

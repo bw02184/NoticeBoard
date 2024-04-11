@@ -8,19 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import sws.NoticeBoard.controller.form.MemberDeleteForm;
-import sws.NoticeBoard.controller.form.MemberIdFindForm;
-import sws.NoticeBoard.controller.form.MemberPwFindForm;
-import sws.NoticeBoard.controller.form.MemberPwUpdateForm;
-import sws.NoticeBoard.controller.form.MemberSearchPwChangeForm;
-import sws.NoticeBoard.controller.form.MemberUpdateForm;
+import sws.NoticeBoard.controller.form.*;
 import sws.NoticeBoard.domain.Member;
+import sws.NoticeBoard.jwt.JwtToken;
 import sws.NoticeBoard.service.MemberService;
 import sws.NoticeBoard.session.SessionConst;
 
@@ -199,5 +191,23 @@ public class MemberController {
     HttpSession session = request.getSession(false);
     session.invalidate();
     return "redirect:/";
+  }
+
+
+  @ResponseBody
+  @PostMapping("/member/sign-in")
+  public JwtToken signIn(@RequestBody SignInDto signInDto) {
+    String username = signInDto.getUsername();
+    String password = signInDto.getPassword();
+    JwtToken jwtToken = memberService.signIn(username, password);
+    log.info("request username = {}, password = {}", username, password);
+    log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
+    return jwtToken;
+  }
+
+  @ResponseBody
+  @PostMapping("/member/test")
+  public String test() {
+    return "success";
   }
 }
