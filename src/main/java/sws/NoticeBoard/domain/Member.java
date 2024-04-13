@@ -38,6 +38,9 @@ public class Member implements UserDetails {
   @OneToMany(mappedBy = "member")
   private List<Comment> comments = new ArrayList<>();
 
+  @OneToMany(mappedBy = "member")
+  private List<RefreshToken> refreshTokens = new ArrayList<>();
+
   @NotEmpty @Email private String email;
 
   @CreatedDate

@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -15,12 +16,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import sws.NoticeBoard.jwt.JwtAuthenticationFilter;
 import sws.NoticeBoard.jwt.JwtTokenProvider;
+import sws.NoticeBoard.repository.MemberJpaRepository;
+import sws.NoticeBoard.repository.MemberRepository;
+import sws.NoticeBoard.service.MemberService;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberJpaRepository memberJpaRepository;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -41,6 +46,7 @@ public class SecurityConfig {
                 .requestMatchers(new AntPathRequestMatcher("/error"),
                         new AntPathRequestMatcher("/css/**"),
                         new AntPathRequestMatcher("/*.ico"),
+                        new AntPathRequestMatcher("/logout"),
                         new AntPathRequestMatcher("/"),
                         new AntPathRequestMatcher("/login"),
                         new AntPathRequestMatcher("/login/new"),
@@ -49,17 +55,17 @@ public class SecurityConfig {
                         new AntPathRequestMatcher("/member/id/find"),
                         new AntPathRequestMatcher("/member/password/find"),
                         new AntPathRequestMatcher("/member/searchPw/change"),
-                        new AntPathRequestMatcher("/logout"),
+                        new AntPathRequestMatcher("/member/sign-in"),
                         new AntPathRequestMatcher("/emailCheck.js"),
-                        new AntPathRequestMatcher("/jss/jquery-3.6.0.min.js")
+                        new AntPathRequestMatcher("/js/jquery-3.6.0.min.js")
                 ).permitAll()
                 // USER 권한이 있어야 요청할 수 있음
-                .requestMatchers(new AntPathRequestMatcher("/**")).hasRole("USER")
+                .requestMatchers(new AntPathRequestMatcher("/**")).authenticated()
                 // 이 밖에 모든 요청에 대해서 인증을 필요로 한다는 설정
                 .anyRequest().authenticated()
                 .and()
                 // JWT 인증을 위하여 직접 구현한 필터를 UsernamePasswordAuthenticationFilter 전에 실행
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, memberJpaRepository), UsernamePasswordAuthenticationFilter.class);
 //    http.cors()
 //        .disable() // cors 방지
 //        .csrf()
@@ -69,24 +75,25 @@ public class SecurityConfig {
 //        .headers()
 //        .frameOptions()
 //        .disable();
-//    http.logout()
-//        .logoutUrl("/logout") // 로그아웃 처리 URL (= form action url)
-//        // .logoutSuccessUrl("/login") // 로그아웃 성공 후 targetUrl,
-//        // logoutSuccessHandler 가 있다면 효과 없으므로 주석처리.
-//        .addLogoutHandler(
-//            (request, response, authentication) -> {
-//              // 사실 굳이 내가 세션 무효화하지 않아도 됨.
-//              // LogoutFilter가 내부적으로 해줌.
-//              HttpSession session = request.getSession();
-//              if (session != null) {
-//                session.invalidate();
-//              }
-//            }) // 로그아웃 핸들러 추가
-//        .logoutSuccessHandler(
-//            (request, response, authentication) -> {
-//              response.sendRedirect("/");
-//            }) // 로그아웃 성공 핸들러
-//        .deleteCookies("boardView"); // 로그아웃 후 삭제할 쿠키 지정
+    http.logout()
+        .logoutUrl("/logout") // 로그아웃 처리 URL (= form action url)
+        // .logoutSuccessUrl("/login") // 로그아웃 성공 후 targetUrl,
+        // logoutSuccessHandler 가 있다면 효과 없으므로 주석처리.
+        .addLogoutHandler(
+            (request, response, authentication) -> {
+              // 사실 굳이 내가 세션 무효화하지 않아도 됨.
+              // LogoutFilter가 내부적으로 해줌.
+              HttpSession session = request.getSession();
+              if (session != null) {
+                session.invalidate();
+              }
+            }) // 로그아웃 핸들러 추가
+        .logoutSuccessHandler(
+            (request, response, authentication) -> {
+              response.sendRedirect("/");
+            }) // 로그아웃 성공 핸들러
+        .deleteCookies("boardView") // 로그아웃 후 삭제할 쿠키 지정
+        .deleteCookies("swsToken"); // 로그아웃 후 삭제할 쿠키 지정
 
         return http.build();
     }

@@ -1,38 +1,40 @@
 package sws.NoticeBoard.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 import sws.NoticeBoard.controller.form.CommentRequest;
 import sws.NoticeBoard.controller.form.CommentResponse;
+import sws.NoticeBoard.cookie.CookieUtil;
 import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.service.BoardService;
 import sws.NoticeBoard.service.CommentService;
 import sws.NoticeBoard.session.SessionConst;
 
+import javax.servlet.http.Cookie;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
 public class CommentController {
-  private final BoardService boardService;
   private final CommentService commentService;
+  private final CookieUtil cookieUtil;
 
   @PostMapping("/board/list/{id}/comments")
   public CommentResponse boardComment(
       @RequestBody CommentRequest params,
       @PathVariable("id") Long id,
       Model model,
-      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
-    commentService.save(id, loginMember.getLoginId(), params.getContent());
+      @CookieValue(value = "swsToken", required = false) Cookie cookie) {
+      try {
+        String loginId = cookieUtil.getUsernameFromToken(cookie);
+        commentService.save(id, loginId, params.getContent());
+      } catch (UnsupportedEncodingException e) {
+          throw new RuntimeException(e);
+      }
     return commentService.findById(id);
   }
 
@@ -47,8 +49,14 @@ public class CommentController {
   public CommentResponse findCommentById(
       @PathVariable("id") final Long boardId,
       @PathVariable("commentId") final Long commentId,
-      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
-    return commentService.findCommentById(commentId, loginMember.getLoginId());
+      @CookieValue(value = "swsToken", required = false) Cookie cookie) {
+      String loginId = "";
+      try {
+        loginId = cookieUtil.getUsernameFromToken(cookie);
+      } catch (UnsupportedEncodingException e) {
+          throw new RuntimeException(e);
+      }
+      return commentService.findCommentById(commentId, loginId);
   }
 
   // 기존 댓글 수정
@@ -57,9 +65,15 @@ public class CommentController {
       @PathVariable("id") final Long boardId,
       @PathVariable("commentId") final Long commentId,
       @RequestBody final CommentRequest params,
-      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+      @CookieValue(value = "swsToken", required = false) Cookie cookie) {
     commentService.updateComment(params);
-    return commentService.findCommentById(commentId, loginMember.getLoginId());
+    String loginId = "";
+    try {
+      loginId = cookieUtil.getUsernameFromToken(cookie);
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
+    return commentService.findCommentById(commentId, loginId);
   }
 
   // 댓글 삭제
@@ -67,7 +81,13 @@ public class CommentController {
   public Long deleteComment(
       @PathVariable("id") final Long boardId,
       @PathVariable("commentId") final Long commentId,
-      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
-    return commentService.deleteComment(commentId, loginMember.getLoginId());
+      @CookieValue(value = "swsToken", required = false) Cookie cookie) {
+    String loginId = "";
+    try {
+      loginId = cookieUtil.getUsernameFromToken(cookie);
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
+    return commentService.deleteComment(commentId, loginId);
   }
 }

@@ -1,5 +1,6 @@
 package sws.NoticeBoard.controller;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -11,24 +12,36 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import sws.NoticeBoard.controller.form.*;
+import sws.NoticeBoard.cookie.CookieUtil;
 import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.jwt.JwtToken;
+import sws.NoticeBoard.jwt.JwtTokenProvider;
+import sws.NoticeBoard.service.LoginService;
 import sws.NoticeBoard.service.MemberService;
 import sws.NoticeBoard.session.SessionConst;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 @Slf4j
 @RequiredArgsConstructor
 @Controller
 public class MemberController {
   private final MemberService memberService;
+  private final CookieUtil cookieUtil;
 
   @GetMapping("/member")
   public String memberInfo(
-      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-      Model model) {
+          @CookieValue(value = "swsToken", required = false) Cookie cookie, Model model)  {
     log.info("memberUpdateForm");
-    Member member =
-        memberService.MemberSearch(loginMember.getLoginId()); // 회원 정보를 변환 하고 난 후 정보 정확성을 위하여 회원조회
+      String loginId = null;
+      try {
+          loginId = cookieUtil.getUsernameFromToken(cookie);
+      } catch (UnsupportedEncodingException e) {
+          throw new RuntimeException(e);
+      }
+      Member member =
+        memberService.MemberSearch(loginId); // 회원 정보를 변환 하고 난 후 정보 정확성을 위하여 회원조회
     MemberUpdateForm form = new MemberUpdateForm();
     form.setRealName(member.getRealName());
     form.setEmail(member.getEmail());
@@ -41,14 +54,13 @@ public class MemberController {
   public String memberUpdate(
       @Validated @ModelAttribute MemberUpdateForm form,
       BindingResult bindingResult,
-      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-      @RequestParam(defaultValue = "/") String redirectURL) {
+      @CookieValue(value = "swsToken", required = false) Cookie cookie, @RequestParam(defaultValue = "/") String redirectURL) {
     if (bindingResult.hasErrors()) {
       return "member/memberInfo";
     }
     try {
-      memberService.memberInfoUpdate(
-          loginMember.getLoginId(),
+      String loginId = cookieUtil.getUsernameFromToken(cookie);
+      memberService.memberInfoUpdate(loginId,
           form.getRealName(),
           form.getEmail(),
           form.getCheckedEmail(),
@@ -56,8 +68,10 @@ public class MemberController {
     } catch (IllegalStateException e) {
       bindingResult.reject("emailCheck", e.getMessage());
       return "member/memberInfo";
+    } catch (UnsupportedEncodingException e) {
+        throw new RuntimeException(e);
     }
-    return "redirect:" + redirectURL;
+      return "redirect:" + redirectURL;
   }
 
   @GetMapping("/member/password")
@@ -70,20 +84,24 @@ public class MemberController {
   public String memberPWUpdate(
       @Validated @ModelAttribute MemberPwUpdateForm form,
       BindingResult bindingResult,
-      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+      @CookieValue(value = "swsToken", required = false) Cookie cookie,
       @RequestParam(defaultValue = "/") String redirectURL) {
     if (bindingResult.hasErrors()) {
       log.info("에러로 인한 이동");
       return "member/memberPWUpdate";
     }
-    form.setLoginId(loginMember.getLoginId());
     try {
+      String loginId = cookieUtil.getUsernameFromToken(cookie);
+      form.setLoginId(loginId);
+
       memberService.memberPWUpdate(form);
     } catch (IllegalStateException e) {
       bindingResult.reject("pwCheck", e.getMessage());
       return "member/memberPWUpdate";
+    } catch (UnsupportedEncodingException e) {
+        throw new RuntimeException(e);
     }
-    return "redirect:" + redirectURL;
+      return "redirect:" + redirectURL;
   }
 
   @GetMapping("/member/id/find")
@@ -165,8 +183,13 @@ public class MemberController {
   @GetMapping("/member/delete")
   public String memberDelete(
       @ModelAttribute MemberDeleteForm form,
-      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
-    form.setLoginId(loginMember.getLoginId());
+      @CookieValue(value = "swsToken", required = false) Cookie cookie) {
+      try {
+        String loginId = cookieUtil.getUsernameFromToken(cookie);
+        form.setLoginId(loginId);
+      } catch (UnsupportedEncodingException e) {
+          throw new RuntimeException(e);
+      }
     return "member/memberDelete";
   }
 
@@ -174,10 +197,16 @@ public class MemberController {
   public String memberDelete(
       @Validated @ModelAttribute MemberDeleteForm form,
       BindingResult bindingResult,
-      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+      @CookieValue(value = "swsToken", required = false) Cookie cookie,
       HttpServletRequest request) {
     // form 화면에서 강제로 아이디를 변경했을 경우를 대비해서 세션에서 로그인 아이디를 얻어 와서 form 데이터에 넣어준다.
-    form.setLoginId(loginMember.getLoginId());
+    try {
+      String loginId = cookieUtil.getUsernameFromToken(cookie);
+      form.setLoginId(loginId);
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
+
     if (bindingResult.hasErrors()) {
       return "member/memberDelete";
     }
@@ -193,21 +222,4 @@ public class MemberController {
     return "redirect:/";
   }
 
-
-  @ResponseBody
-  @PostMapping("/member/sign-in")
-  public JwtToken signIn(@RequestBody SignInDto signInDto) {
-    String username = signInDto.getUsername();
-    String password = signInDto.getPassword();
-    JwtToken jwtToken = memberService.signIn(username, password);
-    log.info("request username = {}, password = {}", username, password);
-    log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
-    return jwtToken;
-  }
-
-  @ResponseBody
-  @PostMapping("/member/test")
-  public String test() {
-    return "success";
-  }
 }

@@ -1,5 +1,6 @@
 package sws.NoticeBoard.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -10,17 +11,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 import sws.NoticeBoard.controller.form.BoardForm;
 import sws.NoticeBoard.controller.form.PageRequestDTO;
+import sws.NoticeBoard.cookie.CookieUtil;
 import sws.NoticeBoard.domain.Board;
 import sws.NoticeBoard.domain.Grade;
 import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.service.BoardService;
+import sws.NoticeBoard.service.MemberService;
 import sws.NoticeBoard.session.SessionConst;
 
 @Slf4j
@@ -28,6 +27,8 @@ import sws.NoticeBoard.session.SessionConst;
 @RequiredArgsConstructor
 public class BoardController {
   private final BoardService boardService;
+  private final MemberService memberService;
+  private final CookieUtil cookieUtil;
 
   @GetMapping("/board/save")
   public String board(@ModelAttribute BoardForm form) {
@@ -38,21 +39,20 @@ public class BoardController {
   public String boardSave(
       @Validated @ModelAttribute BoardForm form,
       BindingResult bindingResult,
-      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+      @CookieValue(value = "swsToken", required = false) Cookie cookie) {
     if (bindingResult.hasErrors()) {
       return "board/boardSave";
     }
-    boardService.save(form, loginMember.getLoginId());
+    String loginId = "";
+    try {
+      loginId = cookieUtil.getUsernameFromToken(cookie);
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
+    boardService.save(form, loginId);
 
     return "redirect:/board/list";
   }
-
-  //  @GetMapping("/board/list")
-  //  public String boardList(Model model) {
-  //    List<Board> boards = boardService.findByAll();
-  //    model.addAttribute("boards", boards);
-  //    return "board/boardList";
-  //  }
 
   @GetMapping("/board/list")
   public String boardList(PageRequestDTO pageRequestDTO, Model model) {
@@ -118,14 +118,20 @@ public class BoardController {
       BindingResult bindingResult,
       @PathVariable("id") Long id,
       Model model,
-      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+      @CookieValue(value = "swsToken", required = false) Cookie cookie) {
     if (bindingResult.hasErrors()) {
       Board findBoard = boardService.findById(id);
       model.addAttribute("post", findBoard);
       return "board/newBoardChange";
     }
     log.info("{}{}{}", form.getId(), form.getTitle(), form.getContent());
-    boardService.update(form, loginMember.getLoginId());
+    String loginId = "";
+    try {
+      loginId = cookieUtil.getUsernameFromToken(cookie);
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
+    boardService.update(form, loginId);
 
     return "redirect:/board/list";
   }
@@ -134,11 +140,18 @@ public class BoardController {
   public String boardDelete(
       @ModelAttribute BoardForm form,
       @PathVariable("id") Long id,
-      @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+      @CookieValue(value = "swsToken", required = false) Cookie cookie) {
     // url 조작을 방지하기 위해서 form.id와 PathVariable id를 비교한다.
     System.out.println("form = " + form);
-    if (loginMember.getGrade() == Grade.ADMIN || Objects.equals(form.getId(), id)) {
-      boardService.delete(id, loginMember.getLoginId());
+    String loginId = "";
+    try {
+      loginId = cookieUtil.getUsernameFromToken(cookie);
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
+    Member member = memberService.memberLoad(loginId);
+    if (member.getGrade() == Grade.ADMIN || Objects.equals(form.getId(), id)) {
+      boardService.delete(id, member.getLoginId());
       return "redirect:/board/list";
     } else return "redirect:/";
   }
