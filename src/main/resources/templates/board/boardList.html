@@ -38,12 +38,12 @@
                 <td th:text="${#temporals.format(form.create_at,'yyyy년 MM월 dd일 HH시 mm분')}"></td>
                 <td th:text="${form.viewCount}"></td>
                 <td>
-                    <a th:if="${session.loginMember?.loginId == form.member?.loginId}" href="#"
+                    <a th:if="${member?.loginId == form.member?.loginId}" href="#"
                        th:href="@{|/board/list/${form.id}/change|}"
                        class="btn btn-danger">수정</a>
                 </td>
                 <td>
-                    <button th:if="${session.loginMember?.loginId == form.member?.loginId} or ${session.loginMember?.grade == T(sws.NoticeBoard.domain.Grade).ADMIN}"
+                    <button th:if="${member.loginId == form.member?.loginId} or ${member?.grade == T(sws.NoticeBoard.domain.Grade).ADMIN}"
                             th:boardParam="${form.id}"
                        th:onclick="deleteCheck(this.getAttribute('boardParam'))"
                        class="btn btn-danger">삭제</button>
