@@ -37,27 +37,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberJpaRepository memberJpaRepository;
 
-    private static final List<String> EXCLUDE_URL =
-            Collections.unmodifiableList(
-                    Arrays.asList(
-                            "/logout",
-                            "/",
-                            "/login",
-                            "/login/new",
-                            "/login/mail/confirm",
-                            "/member/id/find",
-                            "/member/findId",
-                            "/member/password/find",
-                            "/member/searchPw/change",
-                            "/css/**",
-                            "/*.ico",
-                            "/emailCheck.js",
-                            "/js/jquery-3.6.0.min.js",
-                            "/error"
-                    ));
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("do filter 작동중");
         // jwt cookie 사용 시 해당 코드를 사용하여 쿠키에서 토큰을 받아오도록 함
         String token = Arrays.stream(request.getCookies())
                 .filter(c -> c.getName().equals("swsToken"))
@@ -125,7 +107,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
     // Filter에서 제외할 URL 설정
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return EXCLUDE_URL.stream().anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()));
+        String[] exclude_url = {"/logout",
+                "/login",
+                "/login/new",
+                "/login/mail/confirm",
+                "/member/id/find",
+                "/member/findId",
+                "/member/password/find",
+                "/member/searchPw/change",
+                "/css/**",
+                "/*.ico",
+                "/emailCheck.js",
+                "/js/jquery-3.6.0.min.js",
+                "/error"};
+        String path = request.getRequestURI();
+        return Arrays.stream(exclude_url).anyMatch(path::startsWith);
     }
 
 }

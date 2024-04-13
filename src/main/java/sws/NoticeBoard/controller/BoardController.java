@@ -55,9 +55,18 @@ public class BoardController {
   }
 
   @GetMapping("/board/list")
-  public String boardList(PageRequestDTO pageRequestDTO, Model model) {
+  public String boardList(PageRequestDTO pageRequestDTO, Model model,
+                          @CookieValue(value = "swsToken", required = false) Cookie cookie) {
     log.info("list..............................." + pageRequestDTO);
+    String loginId = "";
+    try {
+      loginId = cookieUtil.getUsernameFromToken(cookie);
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
+    Member member = memberService.memberLoad(loginId);
     model.addAttribute("result", boardService.getList(pageRequestDTO));
+    model.addAttribute("member", member);
     return "board/boardList";
   }
 
