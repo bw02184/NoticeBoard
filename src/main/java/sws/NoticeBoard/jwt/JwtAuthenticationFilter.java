@@ -40,6 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("do filter 작동중");
+        String path = request.getRequestURI();
+        System.out.println("doFilter path = " + path);
         // jwt cookie 사용 시 해당 코드를 사용하여 쿠키에서 토큰을 받아오도록 함
         String token = Arrays.stream(request.getCookies())
                 .filter(c -> c.getName().equals("swsToken"))
@@ -107,7 +109,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
     // Filter에서 제외할 URL 설정
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String[] exclude_url = {"/logout",
+        String[] exclude_url = {
+                "/",
+                "/logout",
                 "/login",
                 "/login/new",
                 "/login/mail/confirm",
@@ -116,12 +120,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
                 "/member/password/find",
                 "/member/searchPw/change",
                 "/css/**",
+                "/css/bootstrap.min.css",
+                "/css/jumbotron-narrow.css",
+                "/css/bootstrap.min.css.map",
                 "/*.ico",
                 "/emailCheck.js",
                 "/js/jquery-3.6.0.min.js",
                 "/error"};
         String path = request.getRequestURI();
-        return Arrays.stream(exclude_url).anyMatch(path::startsWith);
+        System.out.println("path = " + path);
+        return Arrays.asList(exclude_url).contains(path);
     }
 
 }
