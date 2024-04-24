@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.domain.RefreshToken;
 import sws.NoticeBoard.repository.RefreshTokenJpaRepository;
 
@@ -35,15 +36,4 @@ public class RefreshTokenService {
             refreshTokenJpaRepository.save(rf);
     }
 
-
-    public void expiredDateCheck(RefreshToken rDTO) {
-        LocalDate localDate = LocalDate.now();
-        Instant instant = localDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
-        Date date = Date.from(instant);
-        //expiredAt이 현재날짜보다 작을때
-        if(rDTO.getExpiredAt().compareTo(date) <0){
-            return;
-        }
-
-    }
 }
