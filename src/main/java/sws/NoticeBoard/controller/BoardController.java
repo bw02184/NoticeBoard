@@ -57,7 +57,6 @@ public class BoardController {
   @GetMapping("/board/list")
   public String boardList(PageRequestDTO pageRequestDTO, Model model,
                           @CookieValue(value = "swsToken", required = false) Cookie cookie) {
-    log.info("list..............................." + pageRequestDTO);
     String loginId = "";
     try {
       loginId = cookieUtil.getUsernameFromToken(cookie);
@@ -133,7 +132,6 @@ public class BoardController {
       model.addAttribute("post", findBoard);
       return "board/newBoardChange";
     }
-    log.info("{}{}{}", form.getId(), form.getTitle(), form.getContent());
     String loginId = "";
     try {
       loginId = cookieUtil.getUsernameFromToken(cookie);
