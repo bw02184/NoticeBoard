@@ -34,7 +34,7 @@ public class HomeController {
       try {
         String loginId = cookieUtil.getUsernameFromToken(cookie);
         Member member = memberRepository.findByLoginId(loginId);
-//        model.addAttribute("member", member);
+        model.addAttribute("member", member);
       } catch (UnsupportedEncodingException e) {
           throw new RuntimeException(e);
       }
