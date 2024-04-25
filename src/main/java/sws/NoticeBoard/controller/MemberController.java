@@ -2,6 +2,7 @@ package sws.NoticeBoard.controller;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import sws.NoticeBoard.jwt.JwtToken;
 import sws.NoticeBoard.jwt.JwtTokenProvider;
 import sws.NoticeBoard.service.LoginService;
 import sws.NoticeBoard.service.MemberService;
+import sws.NoticeBoard.service.RefreshTokenService;
 import sws.NoticeBoard.session.SessionConst;
 
 import java.io.UnsupportedEncodingException;
@@ -28,12 +30,12 @@ import java.net.URLDecoder;
 @Controller
 public class MemberController {
   private final MemberService memberService;
+  private final RefreshTokenService refreshTokenService;
   private final CookieUtil cookieUtil;
 
   @GetMapping("/member")
   public String memberInfo(
           @CookieValue(value = "swsToken", required = false) Cookie cookie, Model model)  {
-    log.info("memberUpdateForm");
       String loginId = null;
       try {
           loginId = cookieUtil.getUsernameFromToken(cookie);
@@ -76,7 +78,6 @@ public class MemberController {
 
   @GetMapping("/member/password")
   public String memberPassword(@ModelAttribute MemberPwUpdateForm form) {
-    log.info("memberPWUpdateForm");
     return "member/memberPWUpdate";
   }
 
@@ -198,7 +199,7 @@ public class MemberController {
       @Validated @ModelAttribute MemberDeleteForm form,
       BindingResult bindingResult,
       @CookieValue(value = "swsToken", required = false) Cookie cookie,
-      HttpServletRequest request) {
+      HttpServletResponse response) {
     // form 화면에서 강제로 아이디를 변경했을 경우를 대비해서 세션에서 로그인 아이디를 얻어 와서 form 데이터에 넣어준다.
     try {
       String loginId = cookieUtil.getUsernameFromToken(cookie);
@@ -216,9 +217,11 @@ public class MemberController {
       bindingResult.reject("pwCheck", e.getMessage());
       return "member/memberDelete";
     }
-    // 로그아웃
-    HttpSession session = request.getSession(false);
-    session.invalidate();
+    cookie.setPath("/");
+    cookie.setMaxAge(0);
+    // httoOnly 옵션을 추가해 서버만 쿠키에 접근할 수 있게 설정
+    cookie.setHttpOnly(true);
+    response.addCookie(cookie);
     return "redirect:/";
   }
 

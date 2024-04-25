@@ -1,11 +1,10 @@
 package sws.NoticeBoard.service;
 
 import java.util.List;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,12 +15,8 @@ import sws.NoticeBoard.controller.form.MemberPwUpdateForm;
 import sws.NoticeBoard.controller.form.MemberSearchPwChangeForm;
 import sws.NoticeBoard.domain.Board;
 import sws.NoticeBoard.domain.Member;
-import sws.NoticeBoard.jwt.JwtToken;
-import sws.NoticeBoard.jwt.JwtTokenProvider;
-import sws.NoticeBoard.repository.BoardRepository;
-import sws.NoticeBoard.repository.CommentRepository;
-import sws.NoticeBoard.repository.MemberJpaRepository;
-import sws.NoticeBoard.repository.MemberRepository;
+import sws.NoticeBoard.domain.RefreshToken;
+import sws.NoticeBoard.repository.*;
 
 @Slf4j
 @Service
@@ -31,6 +26,7 @@ public class MemberService {
   private final MemberRepository memberRepository;
   private final BoardRepository boardRepository;
   private final CommentRepository commentRepository;
+  private final RefreshTokenJpaRepository refreshTokenJpaRepository;
   private final PasswordEncoder passwordEncoder;
 
 
@@ -114,6 +110,9 @@ public class MemberService {
       board.setMember(deletedMember);
     }
     commentRepository.deleteByMemberLoginId(findMember.getLoginId());
+    RefreshToken refreshToken = refreshTokenJpaRepository.findByMemberId(findMember.getId()).orElse(null);
+    if(refreshToken != null)
+      refreshTokenJpaRepository.delete(refreshToken);
     memberRepository.delete(findMember);
   }
   public Member memberLoad(String loginId){

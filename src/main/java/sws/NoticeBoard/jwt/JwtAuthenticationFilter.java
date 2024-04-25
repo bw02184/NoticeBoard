@@ -5,7 +5,6 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -14,8 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import sws.NoticeBoard.controller.form.AdminDTO;
 import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.repository.MemberJpaRepository;
-import sws.NoticeBoard.repository.MemberRepository;
-import sws.NoticeBoard.service.MemberService;
+
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -24,10 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -55,7 +51,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
             jwtToken = token.substring(7);
             try {
                 memberLoginId = jwtTokenProvider.getUsernameFromToken(jwtToken);
-                System.out.println("memberLoginId = " + memberLoginId);
             } catch (MalformedJwtException e) {
                 log.error("Invalid JWT token: {}", e.getMessage());
             } catch (ExpiredJwtException e) {
@@ -79,6 +74,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
             }
             AdminDTO adminDTO = new AdminDTO();
             adminDTO.setRole(member.getRoles());
+            adminDTO.setAuthorities(member.getAuthorities());
             adminDTO.setId(member.getId());
             adminDTO.setLoginId(member.getLoginId());
             adminDTO.setPassword(member.getPassword());
@@ -107,7 +103,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
     // Filter에서 제외할 URL 설정
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String[] exclude_url = {"/logout",
+        String[] exclude_url = {
+                "/",
+                "/logout",
                 "/login",
                 "/login/new",
                 "/login/mail/confirm",
@@ -116,12 +114,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
                 "/member/password/find",
                 "/member/searchPw/change",
                 "/css/**",
+                "/css/bootstrap.min.css",
+                "/css/jumbotron-narrow.css",
+                "/css/bootstrap.min.css.map",
                 "/*.ico",
+                "/favicon.ico",
                 "/emailCheck.js",
                 "/js/jquery-3.6.0.min.js",
                 "/error"};
         String path = request.getRequestURI();
-        return Arrays.stream(exclude_url).anyMatch(path::startsWith);
+        return Arrays.asList(exclude_url).contains(path);
     }
 
 }

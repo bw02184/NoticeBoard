@@ -57,7 +57,6 @@ public class BoardController {
   @GetMapping("/board/list")
   public String boardList(PageRequestDTO pageRequestDTO, Model model,
                           @CookieValue(value = "swsToken", required = false) Cookie cookie) {
-    log.info("list..............................." + pageRequestDTO);
     String loginId = "";
     try {
       loginId = cookieUtil.getUsernameFromToken(cookie);
@@ -133,7 +132,6 @@ public class BoardController {
       model.addAttribute("post", findBoard);
       return "board/newBoardChange";
     }
-    log.info("{}{}{}", form.getId(), form.getTitle(), form.getContent());
     String loginId = "";
     try {
       loginId = cookieUtil.getUsernameFromToken(cookie);
@@ -151,7 +149,6 @@ public class BoardController {
       @PathVariable("id") Long id,
       @CookieValue(value = "swsToken", required = false) Cookie cookie) {
     // url 조작을 방지하기 위해서 form.id와 PathVariable id를 비교한다.
-    System.out.println("form = " + form);
     String loginId = "";
     try {
       loginId = cookieUtil.getUsernameFromToken(cookie);

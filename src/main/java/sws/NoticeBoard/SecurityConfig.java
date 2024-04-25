@@ -60,7 +60,7 @@ public class SecurityConfig {
                         new AntPathRequestMatcher("/js/jquery-3.6.0.min.js")
                 ).permitAll()
                 // USER 권한이 있어야 요청할 수 있음
-                .requestMatchers(new AntPathRequestMatcher("/**")).authenticated()
+                .requestMatchers(new AntPathRequestMatcher("/**")).hasRole("USER")
                 // 이 밖에 모든 요청에 대해서 인증을 필요로 한다는 설정
                 .anyRequest().authenticated()
                 .and()

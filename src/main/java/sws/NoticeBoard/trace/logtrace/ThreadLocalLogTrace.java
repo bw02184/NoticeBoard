@@ -91,7 +91,6 @@ public class ThreadLocalLogTrace implements LogTrace {
     String traceId = MDC.get("traceId");
     TraceId traceId1 = new TraceId(traceId.split("\\.")[1], Integer.parseInt(traceId.split("\\.")[0]));
     if (traceId1.isFirstLevel()) {
-      System.out.println("MDC clear");
       MDC.clear();
     } else {
       TraceId previousId = traceId1.createPreviousId();

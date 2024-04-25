@@ -40,7 +40,6 @@ public class LoginController {
 
   @GetMapping("/login")
   public String loginForm(@ModelAttribute("loginForm") LoginForm form) {
-    log.info("login page");
     return "login/loginForm";
   }
 
@@ -49,8 +48,7 @@ public class LoginController {
       @Validated @ModelAttribute LoginForm form,
       BindingResult bindingResult,
       @RequestParam(defaultValue = "/") String redirectURL,
-      HttpServletRequest request,
-      HttpServletResponse rep) throws UnsupportedEncodingException {
+      HttpServletResponse response) throws UnsupportedEncodingException {
     if (bindingResult.hasErrors()) {
       return "login/loginForm";
     }
@@ -63,18 +61,13 @@ public class LoginController {
 
     Token token = tokenGenerate(loginMember);
     String encodedValue = URLEncoder.encode( "Bearer " + token.accessToken, "UTF-8" ) ;
-    setCookie(rep, encodedValue, 60*60*1);
+    setCookie(response, encodedValue, 60*60*1);
     saveRefreshToken(loginMember, token);
-    // 로그인 성공 처리
-//    HttpSession session = request.getSession();
-//    session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
-
     return "redirect:" + redirectURL;
   }
 
   @GetMapping("/login/new")
   public String memberSaveForm(@ModelAttribute MemberSaveForm form) {
-    log.info("memberSaveForm");
     return "login/memberSaveForm";
   }
 
@@ -119,7 +112,7 @@ public class LoginController {
     // JWT 쿠키 저장(쿠키 명 : token)
     Cookie cookie = new Cookie("swsToken", encodedValue);
     cookie.setPath("/");
-    cookie.setMaxAge(expiredTime); // 유효기간 1시간
+    cookie.setMaxAge(expiredTime);
     // httoOnly 옵션을 추가해 서버만 쿠키에 접근할 수 있게 설정
     cookie.setHttpOnly(true);
     rep.addCookie(cookie);
@@ -158,7 +151,6 @@ public class LoginController {
 //    if(cookie != null){
       try {
         String encodedValue = URLEncoder.encode( "", "UTF-8" );
-        System.out.println("encodedValue = " + encodedValue);
           setCookie(response, encodedValue, 0);
       } catch (UnsupportedEncodingException e) {
           throw new RuntimeException(e);

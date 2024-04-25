@@ -9,7 +9,7 @@
     <div th:replace="fragments/bodyHeader :: bodyHeader" />
     <div class="jumbotron">
         <h1>HELLO NoticeBoard</h1>
-        <p class="lead">회원 기능</p>
+        <p class="lead" th:text = "|${member.realName} 회원기능|">회원 기능</p>
         <p>
         <form th:action="@{/logout}" method="POST"><button class="btn btn-lg btn-secondary" type="submit">로그아웃</button></form>
         </p>

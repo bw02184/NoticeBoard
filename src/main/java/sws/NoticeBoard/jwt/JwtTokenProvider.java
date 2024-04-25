@@ -139,18 +139,11 @@ public class JwtTokenProvider {
     public Boolean reGenerateRefreshToken(String memberId) throws Exception {
         log.info("[reGenerateRefreshToken] refreshToken 재발급 요청");
         // 관리자 정보 조회
-        Member member = new Member();
-        member = memberRepository.findByLoginId(memberId);
+        Member member = memberRepository.findByLoginId(memberId);
 
         // refreshToken 체크
-//        RefreshTokenDTO rDTO = new RefreshTokenDTO();
-//        rDTO.setMemberId(member.getId());
         RefreshToken rf = refreshTokenService.refreshTokenLoad(member.getId()).orElse(null);
-//        if(rf != null){
-//            rDTO.setRefreshToken(rf.getToken());
-//            rDTO.setMemberId(rf.getMember().getId());
-//            rDTO.setRefreshTokenId(rf.getId());
-//        }
+
 
         // refreshToken 정보가 존재하지 않는 경우
         if(rf == null) {
@@ -170,7 +163,7 @@ public class JwtTokenProvider {
             rf.setToken("Bearer " + generateRefreshToken(member.getLoginId()));
             Date expirationDateFromToken = getExpirationDateFromToken(rf.getToken());
             rf.setExpiredAt(expirationDateFromToken);
-//            refreshTokenService.save(rf);
+            refreshTokenService.save(rf);
             log.info("[reGenerateRefreshToken] refreshToken 재발급 완료 : {}", "Bearer " + generateRefreshToken(member.getLoginId()));
             return true;
         }
