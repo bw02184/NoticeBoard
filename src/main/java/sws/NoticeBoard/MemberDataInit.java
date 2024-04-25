@@ -3,6 +3,7 @@ package sws.NoticeBoard;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,8 @@ import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.repository.MemberRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -46,9 +49,7 @@ public class MemberDataInit {
       member.setPassword(passwordEncoder.encode("deleted"));
       member.setEmail("delete@delete.sws");
       member.setGrade(Grade.NORMAL);
-      List<String> roles = new ArrayList<>();
-      roles.add("USER");
-      member.setRoles(roles);
+      member.setRoles(Arrays.asList("ROLE_USER"));
       em.persist(member);
     }
 
@@ -63,9 +64,7 @@ public class MemberDataInit {
       member1.setPassword(passwordEncoder.encode("test"));
       member1.setEmail("sws@sws.sws");
       member1.setGrade(Grade.NORMAL);
-      List<String> roles = new ArrayList<>();
-      roles.add("USER");
-      member1.setRoles(roles);
+      member1.setRoles(Arrays.asList("ROLE_USER"));
       em.persist(member1);
     }
 
@@ -80,9 +79,7 @@ public class MemberDataInit {
       member2.setPassword(passwordEncoder.encode("test2"));
       member2.setEmail("sws2@sws.sws");
       member2.setGrade(Grade.NORMAL);
-      List<String> roles = new ArrayList<>();
-      roles.add("USER");
-      member2.setRoles(roles);
+      member2.setRoles(Arrays.asList("ROLE_USER"));
       em.persist(member2);
     }
 
@@ -97,9 +94,7 @@ public class MemberDataInit {
       member2.setPassword(passwordEncoder.encode("admin"));
       member2.setEmail("root@sws.sws");
       member2.setGrade(Grade.ADMIN);
-      List<String> roles = new ArrayList<>();
-      roles.add("USER");
-      member2.setRoles(roles);
+      member2.setRoles(Arrays.asList("ROLE_USER", "ROLE_ADMIN"));
       em.persist(member2);
     }
   }

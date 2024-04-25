@@ -149,7 +149,6 @@ public class BoardController {
       @PathVariable("id") Long id,
       @CookieValue(value = "swsToken", required = false) Cookie cookie) {
     // url 조작을 방지하기 위해서 form.id와 PathVariable id를 비교한다.
-    System.out.println("form = " + form);
     String loginId = "";
     try {
       loginId = cookieUtil.getUsernameFromToken(cookie);

@@ -5,7 +5,6 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -14,8 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import sws.NoticeBoard.controller.form.AdminDTO;
 import sws.NoticeBoard.domain.Member;
 import sws.NoticeBoard.repository.MemberJpaRepository;
-import sws.NoticeBoard.repository.MemberRepository;
-import sws.NoticeBoard.service.MemberService;
+
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -24,10 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -40,8 +36,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("do filter 작동중");
-        String path = request.getRequestURI();
-        System.out.println("doFilter path = " + path);
         // jwt cookie 사용 시 해당 코드를 사용하여 쿠키에서 토큰을 받아오도록 함
         String token = Arrays.stream(request.getCookies())
                 .filter(c -> c.getName().equals("swsToken"))
@@ -57,7 +51,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
             jwtToken = token.substring(7);
             try {
                 memberLoginId = jwtTokenProvider.getUsernameFromToken(jwtToken);
-                System.out.println("memberLoginId = " + memberLoginId);
             } catch (MalformedJwtException e) {
                 log.error("Invalid JWT token: {}", e.getMessage());
             } catch (ExpiredJwtException e) {
@@ -81,6 +74,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
             }
             AdminDTO adminDTO = new AdminDTO();
             adminDTO.setRole(member.getRoles());
+            adminDTO.setAuthorities(member.getAuthorities());
             adminDTO.setId(member.getId());
             adminDTO.setLoginId(member.getLoginId());
             adminDTO.setPassword(member.getPassword());
@@ -124,11 +118,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
                 "/css/jumbotron-narrow.css",
                 "/css/bootstrap.min.css.map",
                 "/*.ico",
+                "/favicon.ico",
                 "/emailCheck.js",
                 "/js/jquery-3.6.0.min.js",
                 "/error"};
         String path = request.getRequestURI();
-        System.out.println("path = " + path);
         return Arrays.asList(exclude_url).contains(path);
     }
 
