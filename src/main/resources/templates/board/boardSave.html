@@ -1,29 +1,34 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="fragments/header :: header">
   <title>Hello</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
+
 <body>
 <style>
   #editor-container {
-  height: 375px;
-}
+    height: 375px;
+  }
+
   .my_btn {
-	  background-color: Lightslategray;
-	  color: white;
-	  border: none;
-	  width: 100px;
-	  height: 30px;
-	}
-.fieldError {
-border-color: #bd2130;
-color: #dc3545;
-}
-.field-error {
-border-color: #dc3545;
+    background-color: Lightslategray;
+    color: white;
+    border: none;
+    width: 100px;
+    height: 30px;
+  }
+
+  .fieldError {
+    border-color: #bd2130;
     color: #dc3545;
-}
+  }
+
+  .field-error {
+    border-color: #dc3545;
+    color: #dc3545;
+  }
 </style>
 <div class="container">
   <div th:replace="fragments/bodyHeader :: bodyHeader" />
@@ -36,57 +41,129 @@ border-color: #dc3545;
     <div id="form-container" class="container">
       <form th:action="@{/board/save}" th:object="${boardForm}" method="POST">
         <div th:if="${#fields.hasGlobalErrors()}">
-          <p class="fieldError" th:each="err : ${#fields.globalErrors()}"
-             th:text="${err}">전체 오류 메시지</p>
+          <p class="fieldError" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
         </div>
 
         <div align="right">
           <button class="my_btn" type="submit">저장</button>
-          <input type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" id="title" name="title" th:errorclass="fieldError">
+          <input type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" id="title" name="title"
+                 th:errorclass="fieldError">
           <div class="field-error" th:errors="*{title}" />
 
         </div>
         <!-- Create the editor container -->
-        <div  id="editor-container">
+        <div id="editor-container">
         </div>
         <input type="hidden" id="quill_html" name="content">
 
       </form>
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <!-- Include the Quill library -->
     <script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
 
     <!-- Initialize Quill editor -->
     <script>
-    var quill = new Quill('#editor-container', {
-    modules: {
-    toolbar: [
-    [{ header: [1, 2, false] }],
-    ['bold', 'italic', 'underline'],
-    ['indent', 'align', 'code-block']
-    ]
-    },
-    placeholder: 'Compose an epic...',
-    theme: 'snow'  // or 'bubble'
-    });
+      var quill = new Quill('#editor-container', {
+        modules: {
+          toolbar: {
+            container: [
+              ['image', 'link'],
+              [{ header: [1, 2, false] }],
+              ['bold', 'italic', 'underline'],
+              ['indent', 'align', 'code-block'],
+            ],
+          },
 
-    quill.on('text-change', function() {
+        },
+        placeholder: 'Compose an epic...',
+        theme: 'snow'  // or 'bubble'
+      });
+
+      quill.getModule('toolbar').addHandler('image', function () {
+        selectLocalImage();
+      });
+
+      function selectLocalImage() {
+        const fileInput = document.createElement('input');
+        fileInput.setAttribute('type', 'file');
+        fileInput.accept = "image/*";
+
+        fileInput.click();
+
+        fileInput.addEventListener("change", function () {  // change 이벤트로 input 값이 바뀌면 실행
+
+          if ($(this).val() !== "") { // 파일이 있을때만.
+
+            var ext = $(this).val().split(".").pop().toLowerCase();
+
+            if ($.inArray(ext, ["gif", "jpg", "jpeg", "png", "bmp"]) == -1) {
+
+              alert("jpg, jpeg, png, bmp, gif 파일만 업로드 가능합니다.");
+              return;
+            }
+
+
+            var fileSize = this.files[0].size;
+
+            var maxSize = 20 * 1024 * 1024;
+
+            if (fileSize > maxSize) {
+
+              alert("업로드 가능한 최대 이미지 용량은 20MB입니다.");
+
+              return;
+
+            }
+
+            const formData = new FormData();
+            const file = fileInput.files[0];
+            formData.append('uploadFile', file);
+
+            $.ajax({
+              type: 'post',
+              enctype: 'multipart/form-data',
+              url: '/file/upload',
+              data: formData,
+              processData: false,
+              contentType: false,
+              dataType: 'text',
+              success: function (data) {
+                const range = quill.getSelection();
+                quill.insertEmbed(range.index, 'image', "/file/display?fileName=" + data);
+
+              },
+              error: function (err) {
+                console.log('ERROR!! ::');
+                console.log(err);
+              }
+            });
+
+          }
+
+        });
+      }
+
+
+      quill.on('text-change', function () {
         document.getElementById("quill_html").value = quill.root.innerHTML;
-});
-<!--quill.root.innerHTML;-->
-<!--quill.getText();-->
-<!--글자수 5000자 제한(넘길 시 글자 제거)-->
-const maxLength = 5000
+      });
 
-quill.on('editor-change', e => {
-	const length = quill.getLength()
-	if (length > maxLength) quill.deleteText(maxLength, length)
-})
-</script>
+
+      const maxLength = 5000
+
+      quill.on('editor-change', e => {
+        const length = quill.getLength()
+        if (length > maxLength) quill.deleteText(maxLength, length)
+      })
+
+
+    </script>
 
   </div>
   <div th:replace="fragments/footer :: footer" />
 </div> <!-- /container -->
+
 </body>
+
 </html>
