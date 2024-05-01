@@ -21,8 +21,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Date;
 
 
 @Slf4j
@@ -45,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
         String memberLoginId = null;
         String jwtToken = null;
         if(token != null)
-            token = URLDecoder.decode( token, "UTF-8") ;
+            token = URLDecoder.decode( token, "UTF-8");
         // Bearer token인 경우 JWT 토큰 유효성 검사 진행
         if (token != null && token.startsWith("Bearer ")) {
             jwtToken = token.substring(7);
@@ -87,6 +93,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
+        try {
+            if(memberLoginId != null) {
+                Date expirationDateFromToken = jwtTokenProvider.getExpirationDateFromToken(jwtToken);
+                LocalDateTime localDateTime = LocalDateTime.ofInstant(expirationDateFromToken.toInstant(), ZoneId.systemDefault());
+                if(localDateTime.minusMinutes(30).isBefore(LocalDateTime.now())){
+                    String accessToken = expiredAccessTokenToRegenerateToken(response, memberLoginId);
+                    log.info("[JwtRequestFilter] accessToken 재발급 {}", accessToken);
+                }
+            }
+        }catch (Exception e) {
+            log.error("[JwtRequestFilter] accessToken 재발급 체크 중 문제 발생 : {}", e.getMessage());
+        }
 
         // accessToken 인증이 되었다면 refreshToken 재발급이 필요한 경우 재발급
         try {
@@ -124,6 +142,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter
                 "/error"};
         String path = request.getRequestURI();
         return Arrays.asList(exclude_url).contains(path);
+    }
+
+    private String expiredAccessTokenToRegenerateToken(HttpServletResponse response, String loginId) throws UnsupportedEncodingException {
+        String token = jwtTokenProvider.generateAccessToken(loginId);
+        String encodedValue = URLEncoder.encode( "Bearer " + token, "UTF-8" );
+        setCookie(response, encodedValue, 60*60*1);
+        return token;
+    }
+
+    private static void setCookie(HttpServletResponse rep, String encodedValue, int expiredTime) throws UnsupportedEncodingException {
+        // JWT 쿠키 저장(쿠키 명 : token)
+        Cookie cookie = new Cookie("swsToken", encodedValue);
+        cookie.setPath("/");
+        cookie.setMaxAge(expiredTime);
+        // httoOnly 옵션을 추가해 서버만 쿠키에 접근할 수 있게 설정
+        cookie.setHttpOnly(true);
+        rep.addCookie(cookie);
     }
 
 }
