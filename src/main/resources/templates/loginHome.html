@@ -2,16 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header">
     <title>Hello</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
 <div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <div class="jumbotron">
         <h1>HELLO NoticeBoard</h1>
-        <p class="lead" th:text = "${member.realName} + ' 회원기능'">회원 기능</p>
+        <p class="lead" th:text="${member.realName} + ' 회원기능'">회원 기능</p>
         <p>
-        <form th:action="@{/logout}" method="POST"><button class="btn btn-lg btn-secondary" type="submit">로그아웃</button></form>
+        <form th:action="@{/logout}" method="POST">
+            <button class="btn btn-lg btn-secondary" type="submit">로그아웃</button>
+        </form>
         </p>
         <p>
             <a class="btn btn-lg btn-dark" href="/member">회원 정보 변경</a>
@@ -23,12 +25,12 @@
         </p>
         <p>
             <a class="btn btn-lg btn-dark" href="/board/list">게시판 목록</a>
-<!--            <a class="btn btn-lg btn-dark" href="/board/save">글 작성하기</a>-->
+            <!--            <a class="btn btn-lg btn-dark" href="/board/save">글 작성하기</a>-->
         </p>
 
 
     </div>
-    <div th:replace="fragments/footer :: footer" />
+    <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->
 </body>
 </html>

@@ -1,204 +1,210 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/basic">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/basic">
 <th:block layout:fragment="title">
-  <title>상세 페이지</title>
+    <title>상세 페이지</title>
 </th:block>
-<link rel="stylesheet" th:href="@{/css/default.css}" />
-<link rel="stylesheet" th:href="@{/css/common.css}" />
-<link rel="stylesheet" th:href="@{/css/content.css}" />
-<link rel="stylesheet" th:href="@{/css/button.css}" />
+<link rel="stylesheet" th:href="@{/css/default.css}"/>
+<link rel="stylesheet" th:href="@{/css/common.css}"/>
+<link rel="stylesheet" th:href="@{/css/content.css}"/>
+<link rel="stylesheet" th:href="@{/css/button.css}"/>
 <link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet"/>
 <style>
-  .field-error {
-    border-color: #dc3545;
-    color: #dc3545;
-}
+    .field-error {
+      border-color: #dc3545;
+      color: #dc3545;
+  }
 </style>
 
 <th:block layout:fragment="content">
-  <div class="page_tits">
-    <h3>게시판 관리</h3>
-  </div>
-  <div class="content">
-    <form th:action="@{|/board/list/*{id}/change|}" th:object="${boardForm}" method="POST">
-    <section>
-      <table class="tb tb_row">
-        <colgroup>
-          <col style="width:10%;"/><col style="width:23%;"/><col style="width:10%;"/><col style="width:23%;"/>
-        </colgroup>
-        <tbody>
-        <tr>
-          <th scope="row">글 유형</th>
-          <td th:text="${post.noticeYn == false ? '일반' : '공지'}"></td>
+    <div class="page_tits">
+        <h3>게시판 관리</h3>
+    </div>
+    <div class="content">
+        <form th:action="@{|/board/list/*{id}/change|}" th:object="${boardForm}" method="POST">
+            <section>
+                <table class="tb tb_row">
+                    <colgroup>
+                        <col style="width:10%;"/>
+                        <col style="width:23%;"/>
+                        <col style="width:10%;"/>
+                        <col style="width:23%;"/>
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <th scope="row">글 유형</th>
+                        <td th:text="${post.noticeYn == false ? '일반' : '공지'}"></td>
 
-          <th scope="row">등록일</th>
-          <td th:text="${#temporals.format( post.create_at, 'yyyy-MM-dd HH:mm' )}"></td>
-        </tr>
-        <tr>
-          <th scope="row">제목</th>
-          <td><input type="text" size="20" style="width:100%; border: 0;" th:field="*{title}"  th:errorclass="fieldError">
-            <div class="field-error" th:errors="*{title}"/></td>
+                        <th scope="row">등록일</th>
+                        <td th:text="${#temporals.format( post.create_at, 'yyyy-MM-dd HH:mm' )}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">제목</th>
+                        <td><input type="text" size="20" style="width:100%; border: 0;" th:field="*{title}"
+                                   th:errorclass="fieldError">
+                            <div class="field-error" th:errors="*{title}"/>
+                        </td>
 
-          <th scope="row">조회</th>
-          <td colspan="3">[[ ${post.viewCount} ]]</td>
-        </tr>
-        <tr>
-          <th scope="row">이름</th>
-          <td colspan="3">[[ ${post.member.realName} ]]</td>
-        </tr>
-        </tbody>
-      </table>
-      <div id="editor-container">
-        <p th:utext="${post.content}"></p>
-      </div>
-      <input type="hidden" th:field="*{content}" class="form-control" id="content2" name="content2">
-      <p class="btn_set">
-        <button type="submit" class="btns btn_bdr4 btn_mid">수정</button>
-        <button type="button" th:onclick="deleteCheck()" class="btns btn_bdr1 btn_mid">삭제</button>
-        <button type="button" onclick="goListPage();" class="btns btn_bdr3 btn_mid">뒤로</button>
-      </p>
-    </section>
-    </form>
-  </div>
+                        <th scope="row">조회</th>
+                        <td colspan="3">[[ ${post.viewCount} ]]</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">이름</th>
+                        <td colspan="3">[[ ${post.member.realName} ]]</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div id="editor-container">
+                    <p th:utext="${post.content}"></p>
+                </div>
+                <input type="hidden" th:field="*{content}" class="form-control" id="content2" name="content2">
+                <p class="btn_set">
+                    <button type="submit" class="btns btn_bdr4 btn_mid">수정</button>
+                    <button type="button" th:onclick="deleteCheck()" class="btns btn_bdr1 btn_mid">삭제</button>
+                    <button type="button" onclick="goListPage();" class="btns btn_bdr3 btn_mid">뒤로</button>
+                </p>
+            </section>
+        </form>
+    </div>
 
 </th:block>
 
 <th:block layout:fragment="script">
-  <script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
-  <script th:src="@{/js/function.js}"></script>
-  <script th:src="@{/js/jquery-3.6.0.min.js}"></script>
-  <script th:src="@{/js/common.js}"></script>
-  <script src="https://kit.fontawesome.com/79613ae794.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
+    <script th:src="@{/js/function.js}"></script>
+    <script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script src="https://kit.fontawesome.com/79613ae794.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
 
 
-  <script th:inline="javascript">
-/*<![CDATA[*/
+    <script th:inline="javascript">
+        /*<![CDATA[*/
 
 
-            // 게시글 리스트 페이지로 이동
-            function goListPage() {
-                const queryString = new URLSearchParams(location.search);
-                queryString.delete('id');
-                location.href = '/board/list' + '?' + queryString.toString();
-            }
-
-
-    const content = document.getElementById('content2').value;
-    var quill = new Quill('#editor-container', {
-    modules: {
-    toolbar: [
-    ['image', 'link'],
-    [{ header: [1, 2, false] }],
-    ['bold', 'italic', 'underline'],
-    ['indent', 'align', 'code-block']
-    ]
-    },
-    placeholder: 'Compose an epic...',
-    theme: 'snow'  // or 'bubble'
-    });
-
-     quill.getModule('toolbar').addHandler('image', function () {
-        selectLocalImage();
-      });
-
-    function selectLocalImage() {
-        const fileInput = document.createElement('input');
-        fileInput.setAttribute('type', 'file');
-        fileInput.accept = "image/*";
-
-        fileInput.click();
-
-        fileInput.addEventListener("change", function () {  // change 이벤트로 input 값이 바뀌면 실행
-
-            if ($(this).val() !== "") { // 파일이 있을때만.
-
-                var ext = $(this).val().split(".").pop().toLowerCase();
-
-                if ($.inArray(ext, ["gif", "jpg", "jpeg", "png", "bmp"]) == -1) {
-
-                    alert("jpg, jpeg, png, bmp, gif 파일만 업로드 가능합니다.");
-                    return;
-                }
-
-
-                var fileSize = this.files[0].size;
-
-                var maxSize = 20 * 1024 * 1024;
-
-                if (fileSize > maxSize) {
-
-                    alert("업로드 가능한 최대 이미지 용량은 20MB입니다.");
-
-                    return;
-
-                }
-
-                const formData = new FormData();
-                const file = fileInput.files[0];
-                formData.append('uploadFile', file);
-
-                $.ajax({
-                    type: 'post',
-                    enctype: 'multipart/form-data',
-                    url: '/file/upload',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    dataType: 'text',
-                    success: function (data) {
-                        const range = quill.getSelection();
-                        quill.insertEmbed(range.index, 'image', "/file/display?fileName=" + data);
-
-                    },
-                    error: function (err) {
-                        console.log('ERROR!! ::');
-                        console.log(err);
+                    // 게시글 리스트 페이지로 이동
+                    function goListPage() {
+                        const queryString = new URLSearchParams(location.search);
+                        queryString.delete('id');
+                        location.href = '/board/list' + '?' + queryString.toString();
                     }
+
+
+            const content = document.getElementById('content2').value;
+            var quill = new Quill('#editor-container', {
+            modules: {
+            toolbar: [
+            ['image', 'link'],
+            [{ header: [1, 2, false] }],
+            ['bold', 'italic', 'underline'],
+            ['indent', 'align', 'code-block']
+            ]
+            },
+            placeholder: 'Compose an epic...',
+            theme: 'snow'  // or 'bubble'
+            });
+
+             quill.getModule('toolbar').addHandler('image', function () {
+                selectLocalImage();
+              });
+
+            function selectLocalImage() {
+                const fileInput = document.createElement('input');
+                fileInput.setAttribute('type', 'file');
+                fileInput.accept = "image/*";
+
+                fileInput.click();
+
+                fileInput.addEventListener("change", function () {  // change 이벤트로 input 값이 바뀌면 실행
+
+                    if ($(this).val() !== "") { // 파일이 있을때만.
+
+                        var ext = $(this).val().split(".").pop().toLowerCase();
+
+                        if ($.inArray(ext, ["gif", "jpg", "jpeg", "png", "bmp"]) == -1) {
+
+                            alert("jpg, jpeg, png, bmp, gif 파일만 업로드 가능합니다.");
+                            return;
+                        }
+
+
+                        var fileSize = this.files[0].size;
+
+                        var maxSize = 20 * 1024 * 1024;
+
+                        if (fileSize > maxSize) {
+
+                            alert("업로드 가능한 최대 이미지 용량은 20MB입니다.");
+
+                            return;
+
+                        }
+
+                        const formData = new FormData();
+                        const file = fileInput.files[0];
+                        formData.append('uploadFile', file);
+
+                        $.ajax({
+                            type: 'post',
+                            enctype: 'multipart/form-data',
+                            url: '/file/upload',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            dataType: 'text',
+                            success: function (data) {
+                                const range = quill.getSelection();
+                                quill.insertEmbed(range.index, 'image', "/file/display?fileName=" + data);
+
+                            },
+                            error: function (err) {
+                                console.log('ERROR!! ::');
+                                console.log(err);
+                            }
+                        });
+
+                    }
+
                 });
-
             }
-
+            quill.on('text-change', function() {
+                document.getElementById("content2").value = quill.root.innerHTML;
         });
-    }
-    quill.on('text-change', function() {
-        document.getElementById("content2").value = quill.root.innerHTML;
-});
 
-<!--글자수 5000자 제한(넘길 시 글자 제거)-->
-const maxLength = 5000
+        <!--글자수 5000자 제한(넘길 시 글자 제거)-->
+        const maxLength = 5000
 
-quill.on('editor-change', e => {
-	const length = quill.getLength()
-	if (length > maxLength) quill.deleteText(maxLength, length)
-})
+        quill.on('editor-change', e => {
+            const length = quill.getLength()
+            if (length > maxLength) quill.deleteText(maxLength, length)
+        })
 
 
-function deleteCheck() {
- if (confirm("정말 삭제하시겠습니까??") == true){    //확인
- const param = [[${boardForm.id}]];
-  let f = document.createElement('form');
-    f.setAttribute('method', 'post');
-    f.setAttribute('action', "/board/list/"+param+"/delete");
-    document.body.appendChild(f);
-    f.submit();
- }else{   //취소
-     return false;
- }
-}
+        function deleteCheck() {
+         if (confirm("정말 삭제하시겠습니까??") == true){    //확인
+         const param = [[${boardForm.id}]];
+          let f = document.createElement('form');
+            f.setAttribute('method', 'post');
+            f.setAttribute('action', "/board/list/"+param+"/delete");
+            document.body.appendChild(f);
+            f.submit();
+         }else{   //취소
+             return false;
+         }
+        }
 
-function changeCheck() {
- if (confirm("정말 수정하시겠습니까??") == true){    //확인
- const param = [[${boardForm.id}]];
-  let f = document.createElement('form');
-    f.setAttribute('method', 'post');
-    f.setAttribute('action', "/board/list/"+param+"/change");
-    document.body.appendChild(f);
-    f.submit();
- }else{   //취소
-     return false;
- }
-}
-  </script>
+        function changeCheck() {
+         if (confirm("정말 수정하시겠습니까??") == true){    //확인
+         const param = [[${boardForm.id}]];
+          let f = document.createElement('form');
+            f.setAttribute('method', 'post');
+            f.setAttribute('action', "/board/list/"+param+"/change");
+            document.body.appendChild(f);
+            f.submit();
+         }else{   //취소
+             return false;
+         }
+        }
+    </script>
 </th:block>
 </html>

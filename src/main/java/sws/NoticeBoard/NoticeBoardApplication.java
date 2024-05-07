@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 class NoticeBoardApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(NoticeBoardApplication.class, args);
-  }
+	public static void main(String[] args) {
+		SpringApplication.run(NoticeBoardApplication.class, args);
+	}
 }

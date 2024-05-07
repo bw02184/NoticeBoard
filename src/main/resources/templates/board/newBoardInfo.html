@@ -1,366 +1,374 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/basic">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout/basic">
 <th:block layout:fragment="title">
-  <title>상세 페이지</title>
+    <title>상세 페이지</title>
 </th:block>
-<link rel="stylesheet" th:href="@{/css/default.css}" />
-<link rel="stylesheet" th:href="@{/css/common.css}" />
-<link rel="stylesheet" th:href="@{/css/content.css}" />
-<link rel="stylesheet" th:href="@{/css/button.css}" />
+<link rel="stylesheet" th:href="@{/css/default.css}"/>
+<link rel="stylesheet" th:href="@{/css/common.css}"/>
+<link rel="stylesheet" th:href="@{/css/content.css}"/>
+<link rel="stylesheet" th:href="@{/css/button.css}"/>
 <link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet"/>
 
 
 <th:block layout:fragment="content">
-  <div class="page_tits">
-    <h3>게시판 관리</h3>
-  </div>
-
-  <div class="content">
-    <section>
-      <table class="tb tb_row">
-        <colgroup>
-          <col style="width:10%;"/><col style="width:23%;"/><col style="width:10%;"/><col style="width:23%;"/>
-        </colgroup>
-        <tbody>
-        <tr>
-          <th scope="row">글 유형</th>
-          <td th:text="${post.noticeYn == false ? '일반' : '공지'}"></td>
-
-          <th scope="row">등록일</th>
-          <td th:text="${#temporals.format( post.create_at, 'yyyy-MM-dd HH:mm' )}"></td>
-        </tr>
-        <tr>
-          <th scope="row">제목</th>
-          <td>[[ ${post.title} ]]</td>
-
-          <th scope="row">조회</th>
-          <td colspan="3">[[ ${post.viewCount} ]]</td>
-        </tr>
-        <tr>
-          <th scope="row">이름</th>
-          <td colspan="3">[[ ${post.member.realName} ]]</td>
-        </tr>
-<!--        <tr>-->
-<!--          <th scope="row">내용</th>-->
-<!--          <td colspan="3">-->
-<!--            </td>-->
-<!--        </tr>-->
-        </tbody>
-      </table>
-      <div  id="editor-container">
-        <p th:utext="${post.content}"></p>
-      </div>
-      <p class="btn_set">
-<!--        <button type="button" onclick="goWritePage();" class="btns btn_bdr4 btn_mid">수정</button>-->
-<!--        <button type="button" onclick="deletePost();" class="btns btn_bdr1 btn_mid">삭제</button>-->
-        <button type="button" onclick="goListPage();" class="btns btn_bdr3 btn_mid">뒤로</button>
-      </p>
-
-      <!--/* 댓글 작성 */-->
-      <div class="cm_write">
-        <fieldset>
-          <legend class="skipinfo">댓글 입력</legend>
-          <div class="cm_input">
-            <p><textarea id="content" name="content" onkeyup="countingLength(this);" cols="90" rows="4" placeholder="댓글을 입력해 주세요."></textarea></p>
-            <span><button type="button" class="btns" onclick="saveComment();">등 록</button> <i id="counter">0/300자</i></span>
-          </div>
-        </fieldset>
-      </div>
-
-      <!--/* 댓글 렌더링 영역 */-->
-      <div class="cm_list">
-
-      </div>
-
-      <!--/* 페이지네이션 렌더링 영역 */-->
-      <div class="paging">
-
-      </div>
-    </section>
-  </div> <!--/* .content */-->
-
-  <!--/* 댓글 수정 popup */-->
-  <div id="commentUpdatePopup" class="popLayer">
-    <h3>댓글 수정</h3>
-    <div class="pop_container">
-      <table class="tb tb_row tl">
-        <colgroup>
-          <col style="width:30%;" /><col style="width:70%;" />
-        </colgroup>
-        <tbody>
-        <tr>
-          <th scope="row">작성자<span class="es">필수 입력</span></th>
-          <td><input type="text" id="modalWriter" name="modalWriter" placeholder="작성자를 입력해 주세요." /></td>
-        </tr>
-        <tr>
-          <th scope="row">내용<span class="es">필수 입력</span></th>
-          <td><textarea id="modalContent" name="modalContent" cols="90" rows="10" placeholder="수정할 내용을 입력해 주세요."></textarea></td>
-        </tr>
-        </tbody>
-      </table>
-      <p class="btn_set">
-        <button type="button" id="commentUpdateBtn" class="btns btn_st2">수정</button>
-        <button type="button" class="btns btn_bdr2" onclick="closeCommentUpdatePopup();">취소</button>
-      </p>
+    <div class="page_tits">
+        <h3>게시판 관리</h3>
     </div>
-    <button type="button" class="btn_close" onclick="closeCommentUpdatePopup();"><span><i class="far fa-times-circle"></i></span></button>
-  </div>
+
+    <div class="content">
+        <section>
+            <table class="tb tb_row">
+                <colgroup>
+                    <col style="width:10%;"/>
+                    <col style="width:23%;"/>
+                    <col style="width:10%;"/>
+                    <col style="width:23%;"/>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th scope="row">글 유형</th>
+                    <td th:text="${post.noticeYn == false ? '일반' : '공지'}"></td>
+
+                    <th scope="row">등록일</th>
+                    <td th:text="${#temporals.format( post.create_at, 'yyyy-MM-dd HH:mm' )}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">제목</th>
+                    <td>[[ ${post.title} ]]</td>
+
+                    <th scope="row">조회</th>
+                    <td colspan="3">[[ ${post.viewCount} ]]</td>
+                </tr>
+                <tr>
+                    <th scope="row">이름</th>
+                    <td colspan="3">[[ ${post.member.realName} ]]</td>
+                </tr>
+                <!--        <tr>-->
+                <!--          <th scope="row">내용</th>-->
+                <!--          <td colspan="3">-->
+                <!--            </td>-->
+                <!--        </tr>-->
+                </tbody>
+            </table>
+            <div id="editor-container">
+                <p th:utext="${post.content}"></p>
+            </div>
+            <p class="btn_set">
+                <!--        <button type="button" onclick="goWritePage();" class="btns btn_bdr4 btn_mid">수정</button>-->
+                <!--        <button type="button" onclick="deletePost();" class="btns btn_bdr1 btn_mid">삭제</button>-->
+                <button type="button" onclick="goListPage();" class="btns btn_bdr3 btn_mid">뒤로</button>
+            </p>
+
+            <!--/* 댓글 작성 */-->
+            <div class="cm_write">
+                <fieldset>
+                    <legend class="skipinfo">댓글 입력</legend>
+                    <div class="cm_input">
+                        <p><textarea id="content" name="content" onkeyup="countingLength(this);" cols="90" rows="4"
+                                     placeholder="댓글을 입력해 주세요."></textarea></p>
+                        <span><button type="button" class="btns" onclick="saveComment();">등 록</button> <i id="counter">0/300자</i></span>
+                    </div>
+                </fieldset>
+            </div>
+
+            <!--/* 댓글 렌더링 영역 */-->
+            <div class="cm_list">
+
+            </div>
+
+            <!--/* 페이지네이션 렌더링 영역 */-->
+            <div class="paging">
+
+            </div>
+        </section>
+    </div> <!--/* .content */-->
+
+    <!--/* 댓글 수정 popup */-->
+    <div id="commentUpdatePopup" class="popLayer">
+        <h3>댓글 수정</h3>
+        <div class="pop_container">
+            <table class="tb tb_row tl">
+                <colgroup>
+                    <col style="width:30%;"/>
+                    <col style="width:70%;"/>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th scope="row">작성자<span class="es">필수 입력</span></th>
+                    <td><input type="text" id="modalWriter" name="modalWriter" placeholder="작성자를 입력해 주세요."/></td>
+                </tr>
+                <tr>
+                    <th scope="row">내용<span class="es">필수 입력</span></th>
+                    <td><textarea id="modalContent" name="modalContent" cols="90" rows="10"
+                                  placeholder="수정할 내용을 입력해 주세요."></textarea></td>
+                </tr>
+                </tbody>
+            </table>
+            <p class="btn_set">
+                <button type="button" id="commentUpdateBtn" class="btns btn_st2">수정</button>
+                <button type="button" class="btns btn_bdr2" onclick="closeCommentUpdatePopup();">취소</button>
+            </p>
+        </div>
+        <button type="button" class="btn_close" onclick="closeCommentUpdatePopup();"><span><i
+                class="far fa-times-circle"></i></span></button>
+    </div>
 </th:block>
 
 <th:block layout:fragment="script">
-  <script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
-  <script th:src="@{/js/function.js}"></script>
-  <script th:src="@{/js/jquery-3.6.0.min.js}"></script>
-  <script th:src="@{/js/common.js}"></script>
-  <script src="https://kit.fontawesome.com/79613ae794.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
+    <script th:src="@{/js/function.js}"></script>
+    <script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script src="https://kit.fontawesome.com/79613ae794.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
 
 
-  <script th:inline="javascript">
-/*<![CDATA[*/
+    <script th:inline="javascript">
+        /*<![CDATA[*/
 
-    window.onload = () => {
-        findAllComment();
-    }
-
-
-       // 전체 댓글 조회
-    function findAllComment() {
-
-        const postId = [[ ${post.id} ]];
-
-        $.ajax({
-            url : `/board/list/${postId}/comments`,
-            type : 'get',
-            dataType : 'json',
-            async : false,
-            success : function (response) {
-
-                // 1. 조회된 데이터가 없는 경우
-                if ( !response.length ) {
-                    document.querySelector('.cm_list').innerHTML = '<div class="cm_none"><p>등록된 댓글이 없습니다.</p></div>';
-                    return false;
-                }
-
-                // 2. 렌더링 할 HTML을 저장할 변수
-                let commentHtml = '';
-                // 3. 댓글 HTML 추가
-                response.forEach(row => {
-                    commentHtml += `
-                        <div>
-                            <span class="writer_img"><img src="/images/default_profile.png" width="30" height="30" alt="기본 프로필 이미지"/></span>
-                            <p class="writer">
-                                <em>${row.writer}</em>
-                                <span class="date">${dayjs(row.create_at).format('YYYY-MM-DD HH:mm')}</span>
-                            </p>
-                            <div class="cont"><div class="txt_con">${row.content}</div></div>
-                                <p class="func_btns">
-                                  <button type="button" onclick="openCommentUpdatePopup(${row.id});" class="btns"><span class="icons icon_modify">수정</span></button>
-                                  <button type="button" onclick="deleteComment(${row.id});" class="btns"><span class="icons icon_del">삭제</span></button>    </p>
-                        </div>
-                    `;
-                })
-
-                // 4. class가 "cm_list"인 요소를 찾아 HTML을 렌더링
-                document.querySelector('.cm_list').innerHTML = commentHtml;
-            },
-            error : function (request, status, error) {
-                console.log(error)
-            }
-        })
-    }
-<!--            // 게시글 삭제-->
-<!--            function deletePost() {-->
-
-<!--                const id = [[ ${post.id} ]];-->
-
-<!--                if ( !confirm(id + '번 게시글을 삭제할까요?') ) {-->
-<!--                    return false;-->
-<!--                }-->
-
-<!--                let inputHtml = '';-->
-
-<!--                new URLSearchParams(location.search).forEach((value, key) => {-->
-<!--                    inputHtml += `<input type="hidden" name="${key}" value="${value}" />`;-->
-<!--                })-->
-
-<!--                const formHtml = `-->
-<!--                    <form id="deleteForm" action="/post/delete.do" method="post">-->
-<!--                        ${inputHtml}-->
-<!--                    </form>-->
-<!--                `;-->
-
-<!--                const doc = new DOMParser().parseFromString(formHtml, 'text/html');-->
-<!--                const form = doc.body.firstChild;-->
-<!--                document.body.append(form);-->
-<!--                document.getElementById('deleteForm').submit();-->
-<!--            }-->
-
-
-<!--            // 게시글 수정 페이지로 이동-->
-<!--            function goWritePage() {-->
-<!--                location.href = '/post/write.do' + location.search;-->
-<!--            }-->
-
-
-            // 게시글 리스트 페이지로 이동
-            function goListPage() {
-                const queryString = new URLSearchParams(location.search);
-                queryString.delete('id');
-                location.href = '/board/list' + '?' + queryString.toString();
+            window.onload = () => {
+                findAllComment();
             }
 
 
-            // 댓글 길이 카운팅
-            function countingLength(content) {
-                if (content.value.length > 300) {
-                    alert('댓글을 300자 이하로 입력해 주세요.');
-                    content.value = content.value.substring(0, 300);
-                    content.focus();
-                }
-                document.getElementById('counter').innerText = content.value.length + '/300자';
-            }
-
-
-            // 댓글 저장
-            function saveComment() {
-
-                const content = document.getElementById('content');
-                isValid(content, '댓글');
+               // 전체 댓글 조회
+            function findAllComment() {
 
                 const postId = [[ ${post.id} ]];
-                const uri = `/board/list/${postId}/comments`;
+
+                $.ajax({
+                    url : `/board/list/${postId}/comments`,
+                    type : 'get',
+                    dataType : 'json',
+                    async : false,
+                    success : function (response) {
+
+                        // 1. 조회된 데이터가 없는 경우
+                        if ( !response.length ) {
+                            document.querySelector('.cm_list').innerHTML = '<div class="cm_none"><p>등록된 댓글이 없습니다.</p></div>';
+                            return false;
+                        }
+
+                        // 2. 렌더링 할 HTML을 저장할 변수
+                        let commentHtml = '';
+                        // 3. 댓글 HTML 추가
+                        response.forEach(row => {
+                            commentHtml += `
+                                <div>
+                                    <span class="writer_img"><img src="/images/default_profile.png" width="30" height="30" alt="기본 프로필 이미지"/></span>
+                                    <p class="writer">
+                                        <em>${row.writer}</em>
+                                        <span class="date">${dayjs(row.create_at).format('YYYY-MM-DD HH:mm')}</span>
+                                    </p>
+                                    <div class="cont"><div class="txt_con">${row.content}</div></div>
+                                        <p class="func_btns">
+                                          <button type="button" onclick="openCommentUpdatePopup(${row.id});" class="btns"><span class="icons icon_modify">수정</span></button>
+                                          <button type="button" onclick="deleteComment(${row.id});" class="btns"><span class="icons icon_del">삭제</span></button>    </p>
+                                </div>
+                            `;
+                        })
+
+                        // 4. class가 "cm_list"인 요소를 찾아 HTML을 렌더링
+                        document.querySelector('.cm_list').innerHTML = commentHtml;
+                    },
+                    error : function (request, status, error) {
+                        console.log(error)
+                    }
+                })
+            }
+        <!--            // 게시글 삭제-->
+        <!--            function deletePost() {-->
+
+        <!--                const id = [[ ${post.id} ]];-->
+
+        <!--                if ( !confirm(id + '번 게시글을 삭제할까요?') ) {-->
+        <!--                    return false;-->
+        <!--                }-->
+
+        <!--                let inputHtml = '';-->
+
+        <!--                new URLSearchParams(location.search).forEach((value, key) => {-->
+        <!--                    inputHtml += `<input type="hidden" name="${key}" value="${value}" />`;-->
+        <!--                })-->
+
+        <!--                const formHtml = `-->
+        <!--                    <form id="deleteForm" action="/post/delete.do" method="post">-->
+        <!--                        ${inputHtml}-->
+        <!--                    </form>-->
+        <!--                `;-->
+
+        <!--                const doc = new DOMParser().parseFromString(formHtml, 'text/html');-->
+        <!--                const form = doc.body.firstChild;-->
+        <!--                document.body.append(form);-->
+        <!--                document.getElementById('deleteForm').submit();-->
+        <!--            }-->
+
+
+        <!--            // 게시글 수정 페이지로 이동-->
+        <!--            function goWritePage() {-->
+        <!--                location.href = '/post/write.do' + location.search;-->
+        <!--            }-->
+
+
+                    // 게시글 리스트 페이지로 이동
+                    function goListPage() {
+                        const queryString = new URLSearchParams(location.search);
+                        queryString.delete('id');
+                        location.href = '/board/list' + '?' + queryString.toString();
+                    }
+
+
+                    // 댓글 길이 카운팅
+                    function countingLength(content) {
+                        if (content.value.length > 300) {
+                            alert('댓글을 300자 이하로 입력해 주세요.');
+                            content.value = content.value.substring(0, 300);
+                            content.focus();
+                        }
+                        document.getElementById('counter').innerText = content.value.length + '/300자';
+                    }
+
+
+                    // 댓글 저장
+                    function saveComment() {
+
+                        const content = document.getElementById('content');
+                        isValid(content, '댓글');
+
+                        const postId = [[ ${post.id} ]];
+                        const uri = `/board/list/${postId}/comments`;
+                        const params = {
+                            postId : postId,
+                            content : content.value,
+                            writer : [[ ${post.member.realName} ]]
+                        }
+
+                        callApi(uri, 'post', params);
+                        alert('저장되었습니다.');
+                        content.value = '';
+                        document.getElementById('counter').innerText = '0/300자';
+                        findAllComment(1);
+                    }
+
+            // 댓글 수정 팝업 open
+            function openCommentUpdatePopup(id) {
+
+                const postId = [[ ${post.id} ]];
+
+                $.ajax({
+                    url : `/board/list/${postId}/comments/${id}`,
+                    type : 'get',
+                    dataType : 'json',
+                    async : false,
+                    success : function (response) {
+                        document.getElementById('modalWriter').value = response.writer;
+                        document.getElementById('modalContent').value = response.content;
+                        document.getElementById('commentUpdateBtn').setAttribute('onclick', `updateComment(${id})`);
+                        layerPop('commentUpdatePopup');
+                    },
+                    error : function (request, status, error) {
+                        console.log(error)
+                    }
+                })
+            }
+
+
+            // 댓글 수정 팝업 close
+            function closeCommentUpdatePopup() {
+                document.querySelectorAll('#modalContent, #modalWriter').forEach(element => element.value = '');
+                document.getElementById('commentUpdateBtn').removeAttribute('onclick');
+                layerPopClose('commentUpdatePopup');
+            }
+            // 댓글 수정
+            function updateComment(id) {
+
+                const writer = document.getElementById('modalWriter');
+                const content = document.getElementById('modalContent');
+                isValid(writer, '작성자');
+                isValid(content, '수정할 내용');
+
+                const postId = [[ ${post.id} ]];
                 const params = {
+                    id : id,
                     postId : postId,
                     content : content.value,
-                    writer : [[ ${post.member.realName} ]]
+                    writer : writer.value
                 }
 
-                callApi(uri, 'post', params);
-                alert('저장되었습니다.');
-                content.value = '';
-                document.getElementById('counter').innerText = '0/300자';
-                findAllComment(1);
+                $.ajax({
+                    url : `/board/list/${postId}/comments/${id}`,
+                    type : 'patch',
+                    contentType : 'application/json; charset=utf-8',
+                    dataType : 'json',
+                    data : JSON.stringify(params),
+                    async : false,
+                    success : function (response) {
+                        alert('수정되었습니다.');
+                        closeCommentUpdatePopup();
+                        findAllComment();
+                    },
+                    error : function (request, status, error) {
+                        console.log(error)
+                    }
+                })
             }
+            // 댓글 삭제
+            function deleteComment(id) {
 
-    // 댓글 수정 팝업 open
-    function openCommentUpdatePopup(id) {
 
-        const postId = [[ ${post.id} ]];
 
-        $.ajax({
-            url : `/board/list/${postId}/comments/${id}`,
-            type : 'get',
-            dataType : 'json',
-            async : false,
-            success : function (response) {
-                document.getElementById('modalWriter').value = response.writer;
-                document.getElementById('modalContent').value = response.content;
-                document.getElementById('commentUpdateBtn').setAttribute('onclick', `updateComment(${id})`);
-                layerPop('commentUpdatePopup');
-            },
-            error : function (request, status, error) {
-                console.log(error)
+                const postId = [[ ${post.id} ]];
+
+                $.ajax({
+                    url : `/board/list/${postId}/comments/${id}`,
+                    type : 'delete',
+                    dataType : 'json',
+                    async : false,
+                    success : function (response) {
+                     if ( !confirm('선택하신 댓글을 삭제할까요?') ) {
+                    return false;
+                }
+                        alert('삭제되었습니다.');
+                        findAllComment();
+                    },
+                    error : function (request, status, error) {
+                        console.log(error)
+                    }
+                })
             }
+                /*]]>*/
+
+
+
+            const content = document.getElementById('content').value;
+            var Size = Quill.import('attributors/style/size');
+            Size.whitelist = ['14px', '16px', '18px'];
+            Quill.register(Size, true);
+
+            var toolbarOptions = [
+                [{ 'size': ['14px', '16px', '18px'] }],
+            ];
+
+            var quill = new Quill("#editor-container", {
+                theme: 'snow',
+                modules: {
+                toolbar: toolbarOptions
+                },
+                placeholder: content,
+                readOnly: true
+            });
+
+        <!--const selection = quill.getSelection(true)-->
+        <!--quill.insertText(selection.index, content) // 셀렉션 위치-->
+
+        <!--글자수 5000자 제한(넘길 시 글자 제거)-->
+        const maxLength = 5000
+
+        quill.on('editor-change', e => {
+            const length = quill.getLength()
+            if (length > maxLength) quill.deleteText(maxLength, length)
         })
-    }
-
-
-    // 댓글 수정 팝업 close
-    function closeCommentUpdatePopup() {
-        document.querySelectorAll('#modalContent, #modalWriter').forEach(element => element.value = '');
-        document.getElementById('commentUpdateBtn').removeAttribute('onclick');
-        layerPopClose('commentUpdatePopup');
-    }
-    // 댓글 수정
-    function updateComment(id) {
-
-        const writer = document.getElementById('modalWriter');
-        const content = document.getElementById('modalContent');
-        isValid(writer, '작성자');
-        isValid(content, '수정할 내용');
-
-        const postId = [[ ${post.id} ]];
-        const params = {
-            id : id,
-            postId : postId,
-            content : content.value,
-            writer : writer.value
-        }
-
-        $.ajax({
-            url : `/board/list/${postId}/comments/${id}`,
-            type : 'patch',
-            contentType : 'application/json; charset=utf-8',
-            dataType : 'json',
-            data : JSON.stringify(params),
-            async : false,
-            success : function (response) {
-                alert('수정되었습니다.');
-                closeCommentUpdatePopup();
-                findAllComment();
-            },
-            error : function (request, status, error) {
-                console.log(error)
-            }
-        })
-    }
-    // 댓글 삭제
-    function deleteComment(id) {
-
-
-
-        const postId = [[ ${post.id} ]];
-
-        $.ajax({
-            url : `/board/list/${postId}/comments/${id}`,
-            type : 'delete',
-            dataType : 'json',
-            async : false,
-            success : function (response) {
-             if ( !confirm('선택하신 댓글을 삭제할까요?') ) {
-            return false;
-        }
-                alert('삭제되었습니다.');
-                findAllComment();
-            },
-            error : function (request, status, error) {
-                console.log(error)
-            }
-        })
-    }
-        /*]]>*/
-
-
-
-    const content = document.getElementById('content').value;
-    var Size = Quill.import('attributors/style/size');
-    Size.whitelist = ['14px', '16px', '18px'];
-    Quill.register(Size, true);
-
-    var toolbarOptions = [
-        [{ 'size': ['14px', '16px', '18px'] }],
-    ];
-
-    var quill = new Quill("#editor-container", {
-        theme: 'snow',
-        modules: {
-        toolbar: toolbarOptions
-        },
-        placeholder: content,
-        readOnly: true
-    });
-
-<!--const selection = quill.getSelection(true)-->
-<!--quill.insertText(selection.index, content) // 셀렉션 위치-->
-
-<!--글자수 5000자 제한(넘길 시 글자 제거)-->
-const maxLength = 5000
-
-quill.on('editor-change', e => {
-	const length = quill.getLength()
-	if (length > maxLength) quill.deleteText(maxLength, length)
-})
-  </script>
+    </script>
 </th:block>
 </html>

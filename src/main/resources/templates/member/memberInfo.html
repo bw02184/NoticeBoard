@@ -1,64 +1,70 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header">
-  <title>Hello</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 
 <style>
-.fieldError {
-border-color: #bd2130;
-color: #dc3545;
-}
-.field-error {
-border-color: #dc3545;
+    .fieldError {
+    border-color: #bd2130;
     color: #dc3545;
-}
+    }
+    .field-error {
+    border-color: #dc3545;
+        color: #dc3545;
+    }
 </style>
 <body>
 <div class="container">
-  <div th:replace="fragments/bodyHeader :: bodyHeader" />
-  <div class="jumbotron">
-    <h1>회원 정보 변경</h1>
-  </div>
-  <form role="form" action="/member/update" th:object="${memberUpdateForm}"
-        method="post">
-    <div th:if="${#fields.hasGlobalErrors()}">
-      <p class="fieldError" th:each="err : ${#fields.globalErrors()}"
-         th:text="${err}">전체 오류 메시지</p>
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <div class="jumbotron">
+        <h1>회원 정보 변경</h1>
     </div>
-    <div class="form-group">
-      <label th:for="loginId">아이디</label>
-      <input type="text" th:field="*{loginId}" class="form-control" placeholder="아이디를 입력하세요" th:errorclass="fieldError">
-      <div class="field-error" th:errors="*{loginId}" />
-    </div>
-    <div class="form-group">
-      <label th:for="realName">이름</label>
-      <input type="text" th:field="*{realName}" class="form-control" placeholder="이름을 입력하세요"th:errorclass="fieldError">
-      <div class="field-error" th:errors="*{realName}" />
-    </div>
-    <div class="form-group email-form">
-      <label th:for="email">이메일</label>
-      <div class="input-group">
-        <input type="text" th:field="*{email}" class="form-control" name="userEmail1" id="userEmail1" placeholder="이메일을 입력하세요"th:errorclass="fieldError">
-        <div class="input-group-addon">
-          <button type="button"  class="btn btn-primary" id="mail-Check-Btn">본인인증</button>
+    <form role="form" action="/member/update" th:object="${memberUpdateForm}"
+          method="post">
+        <div th:if="${#fields.hasGlobalErrors()}">
+            <p class="fieldError" th:each="err : ${#fields.globalErrors()}"
+               th:text="${err}">전체 오류 메시지</p>
         </div>
-        <div class="mail-check-box">
-          <input class="form-control mail-check-input" placeholder="인증번호 10자리를 입력해주세요!" disabled="disabled" maxlength="10">
+        <div class="form-group">
+            <label th:for="loginId">아이디</label>
+            <input type="text" th:field="*{loginId}" class="form-control" placeholder="아이디를 입력하세요"
+                   th:errorclass="fieldError">
+            <div class="field-error" th:errors="*{loginId}"/>
         </div>
-        <span id="mail-check-warn"></span>
-      </div>
-      <div class="field-error" th:errors="*{realName}" />
-    </div>
-    <input type="hidden" th:field="*{checkedEmail}" class="form-control" id="checkedEmail" name="checkedEmail" value="."/>
-    <input type="checkbox" th:field="*{emailConfirm}" class="form-control" id="emailConfirm" name="emailConfirm"  value="false" style="display:none" checked="false" />
-    <button type="submit" class="btn btn-primary">확인</button>
-    <button class="btn btn-primary" th:onclick="|location.href='@{/}'|" type="button">취소</button>
+        <div class="form-group">
+            <label th:for="realName">이름</label>
+            <input type="text" th:field="*{realName}" class="form-control" placeholder="이름을 입력하세요"
+                   th:errorclass="fieldError">
+            <div class="field-error" th:errors="*{realName}"/>
+        </div>
+        <div class="form-group email-form">
+            <label th:for="email">이메일</label>
+            <div class="input-group">
+                <input type="text" th:field="*{email}" class="form-control" name="userEmail1" id="userEmail1"
+                       placeholder="이메일을 입력하세요" th:errorclass="fieldError">
+                <div class="input-group-addon">
+                    <button type="button" class="btn btn-primary" id="mail-Check-Btn">본인인증</button>
+                </div>
+                <div class="mail-check-box">
+                    <input class="form-control mail-check-input" placeholder="인증번호 10자리를 입력해주세요!" disabled="disabled"
+                           maxlength="10">
+                </div>
+                <span id="mail-check-warn"></span>
+            </div>
+            <div class="field-error" th:errors="*{realName}"/>
+        </div>
+        <input type="hidden" th:field="*{checkedEmail}" class="form-control" id="checkedEmail" name="checkedEmail"
+               value="."/>
+        <input type="checkbox" th:field="*{emailConfirm}" class="form-control" id="emailConfirm" name="emailConfirm"
+               value="false" style="display:none" checked="false"/>
+        <button type="submit" class="btn btn-primary">확인</button>
+        <button class="btn btn-primary" th:onclick="|location.href='@{/}'|" type="button">취소</button>
 
-  </form>
-  <br/>
-  <div th:replace="fragments/footer :: footer" />
+    </form>
+    <br/>
+    <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->
 </body>
 <script th:src="@{/js/jquery-3.6.0.min.js}"></script>

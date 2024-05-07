@@ -6,24 +6,24 @@
 </head>
 <body>
 <style>
-  #editor-container {
-  height: 375px;
-}
-  .my_btn {
-	  background-color: Lightslategray;
-	  color: white;
-	  border: none;
-	  width: 100px;
-	  height: 30px;
-	}
-.fieldError {
-border-color: #bd2130;
-color: #dc3545;
-}
-.field-error {
-border-color: #dc3545;
-    color: #dc3545;
-}
+    #editor-container {
+    height: 375px;
+  }
+    .my_btn {
+        background-color: Lightslategray;
+        color: white;
+        border: none;
+        width: 100px;
+        height: 30px;
+      }
+  .fieldError {
+  border-color: #bd2130;
+  color: #dc3545;
+  }
+  .field-error {
+  border-color: #dc3545;
+      color: #dc3545;
+  }
 
 </style>
 <div class="container">
@@ -56,7 +56,7 @@ border-color: #dc3545;
                 <input type="hidden" th:field="*{content}" class="form-control" id="content" name="content">
             </form>
             <div align="right">
-<!--              "|location.href='@{/board/list/{id}/delete(id=${boardForm.id})}'|"-->
+                <!--              "|location.href='@{/board/list/{id}/delete(id=${boardForm.id})}'|"-->
                 <button class="my_btn" th:onclick="deleteCheck()">
                     삭제
                 </button>
@@ -68,47 +68,47 @@ border-color: #dc3545;
 
         <!-- Initialize Quill editor -->
         <script>
-    const content = document.getElementById('content').value;
-    var quill = new Quill('#editor-container', {
-    modules: {
-    toolbar: [
-    [{ header: [1, 2, false] }],
-    ['bold', 'italic', 'underline'],
-    ['indent', 'align', 'code-block']
-    ]
-    },
-    placeholder: 'Compose an epic...',
-    theme: 'snow'  // or 'bubble'
-    });
+            const content = document.getElementById('content').value;
+            var quill = new Quill('#editor-container', {
+            modules: {
+            toolbar: [
+            [{ header: [1, 2, false] }],
+            ['bold', 'italic', 'underline'],
+            ['indent', 'align', 'code-block']
+            ]
+            },
+            placeholder: 'Compose an epic...',
+            theme: 'snow'  // or 'bubble'
+            });
 
-<!--    const selection = quill.getSelection(true)-->
-<!--    quill.insertText(selection.index, content) // 셀렉션 위치-->
+        <!--    const selection = quill.getSelection(true)-->
+        <!--    quill.insertText(selection.index, content) // 셀렉션 위치-->
 
-    quill.on('text-change', function() {
-        document.getElementById("content").value = quill.root.innerHTML;
-});
+            quill.on('text-change', function() {
+                document.getElementById("content").value = quill.root.innerHTML;
+        });
 
-<!--글자수 5000자 제한(넘길 시 글자 제거)-->
-const maxLength = 5000
+        <!--글자수 5000자 제한(넘길 시 글자 제거)-->
+        const maxLength = 5000
 
-quill.on('editor-change', e => {
-	const length = quill.getLength()
-	if (length > maxLength) quill.deleteText(maxLength, length)
-})
+        quill.on('editor-change', e => {
+            const length = quill.getLength()
+            if (length > maxLength) quill.deleteText(maxLength, length)
+        })
 
 
-function deleteCheck() {
- if (confirm("정말 삭제하시겠습니까??") == true){    //확인
- const param = [[${boardForm.id}]];
-  let f = document.createElement('form');
-    f.setAttribute('method', 'post');
-    f.setAttribute('action', "/board/list/"+param+"/delete");
-    document.body.appendChild(f);
-    f.submit();
- }else{   //취소
-     return false;
- }
-}
+        function deleteCheck() {
+         if (confirm("정말 삭제하시겠습니까??") == true){    //확인
+         const param = [[${boardForm.id}]];
+          let f = document.createElement('form');
+            f.setAttribute('method', 'post');
+            f.setAttribute('action', "/board/list/"+param+"/delete");
+            document.body.appendChild(f);
+            f.submit();
+         }else{   //취소
+             return false;
+         }
+        }
         </script>
 
     </div>

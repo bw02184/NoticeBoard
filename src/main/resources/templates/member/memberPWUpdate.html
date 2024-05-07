@@ -1,61 +1,61 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header">
-  <title>Hello</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 
 <style>
-.fieldError {
-border-color: #dc3545;
-color: #dc3545;
-}
-.field-error {
-border-color: #dc3545;
+    .fieldError {
+    border-color: #dc3545;
     color: #dc3545;
-}
+    }
+    .field-error {
+    border-color: #dc3545;
+        color: #dc3545;
+    }
 </style>
 <body>
 <div class="container">
-  <div th:replace="fragments/bodyHeader :: bodyHeader" />
-  <div class="jumbotron">
-    <h1>비밀번호 변경</h1>
-  </div>
-  <form role="form" action="/member/password/update" th:object="${memberPwUpdateForm}"
-        method="post">
-    <div th:if="${#fields.hasGlobalErrors()}">
-      <p class="field-error" th:each="err : ${#fields.globalErrors()}"
-         th:text="${err}">전체 오류 메시지</p>
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <div class="jumbotron">
+        <h1>비밀번호 변경</h1>
     </div>
-    <div>
-      <label for="password">현재 비밀번호를 입력해 주세요</label>
-      <input type="password" id="password" th:field="*{password}"
-             class="form-control"
-             th:errorclass="fieldError">
-      <div class="field-error" th:errors="*{password}" />
-    </div>
-    <div>
-      <label for="password">변경할 비밀번호를 입력해 주세요</label>
-      <input type="password" id="newPassword" th:field="*{newPassword}"
-             class="form-control"
-             th:errorclass="fieldError">
-      <div class="field-error" th:errors="*{newPassword}" />
-    </div>
-    <div>
-      <label for="password">변경할 비밀번호를 다시 입력해 주세요</label>
-      <input type="password" id="newPassword2" th:field="*{newPassword2}"
-             class="form-control"
-             th:errorclass="fieldError">
-      <div class="field-error" th:errors="*{newPassword2}" />
-    </div>
+    <form role="form" action="/member/password/update" th:object="${memberPwUpdateForm}"
+          method="post">
+        <div th:if="${#fields.hasGlobalErrors()}">
+            <p class="field-error" th:each="err : ${#fields.globalErrors()}"
+               th:text="${err}">전체 오류 메시지</p>
+        </div>
+        <div>
+            <label for="password">현재 비밀번호를 입력해 주세요</label>
+            <input type="password" id="password" th:field="*{password}"
+                   class="form-control"
+                   th:errorclass="fieldError">
+            <div class="field-error" th:errors="*{password}"/>
+        </div>
+        <div>
+            <label for="password">변경할 비밀번호를 입력해 주세요</label>
+            <input type="password" id="newPassword" th:field="*{newPassword}"
+                   class="form-control"
+                   th:errorclass="fieldError">
+            <div class="field-error" th:errors="*{newPassword}"/>
+        </div>
+        <div>
+            <label for="password">변경할 비밀번호를 다시 입력해 주세요</label>
+            <input type="password" id="newPassword2" th:field="*{newPassword2}"
+                   class="form-control"
+                   th:errorclass="fieldError">
+            <div class="field-error" th:errors="*{newPassword2}"/>
+        </div>
 
 
-    <button type="submit" class="btn btn-primary">확인</button>
-    <button class="btn btn-primary" th:onclick="|location.href='@{/}'|" type="button">취소</button>
+        <button type="submit" class="btn btn-primary">확인</button>
+        <button class="btn btn-primary" th:onclick="|location.href='@{/}'|" type="button">취소</button>
 
-  </form>
-  <br/>
-  <div th:replace="fragments/footer :: footer" />
+    </form>
+    <br/>
+    <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->
 </body>
 </html>

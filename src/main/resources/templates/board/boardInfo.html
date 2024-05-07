@@ -1,93 +1,92 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header">
-  <title>Hello</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
 <style>
-  #editor-container {
-  height: 375px;
-}
-  .my_btn {
-	  background-color: Lightslategray;
-	  color: white;
-	  border: none;
-	  width: 100px;
-	  height: 30px;
-	}
-.fieldError {
-border-color: #bd2130;
-color: #dc3545;
-}
-.field-error {
-border-color: #dc3545;
-    color: #dc3545;
-}
+    #editor-container {
+    height: 375px;
+  }
+    .my_btn {
+        background-color: Lightslategray;
+        color: white;
+        border: none;
+        width: 100px;
+        height: 30px;
+      }
+  .fieldError {
+  border-color: #bd2130;
+  color: #dc3545;
+  }
+  .field-error {
+  border-color: #dc3545;
+      color: #dc3545;
+  }
 </style>
 <div class="container">
-  <div th:replace="fragments/bodyHeader :: bodyHeader" />
-  <div class="jumbotron">
-    <h1>HELLO NoticeBoard</h1>
-    <p class="lead">게시판 보기</p>
-    <!-- Include Quill stylesheet -->
-    <link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet" />
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <div class="jumbotron">
+        <h1>HELLO NoticeBoard</h1>
+        <p class="lead">게시판 보기</p>
+        <!-- Include Quill stylesheet -->
+        <link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet"/>
 
-    <div id="form-container" class="container">
-      <div th:object="${boardForm}">
-        <div align="right">
-          <input type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" readonly id="title" name="title" th:errorclass="fieldError">
-        </div>
-        <!-- Create the editor container -->
-        <div  id="editor-container" aria-readonly="true">
-          <p th:utext="*{content}"></p>
-        </div>
-        <input type="hidden" th:field="*{content}" class="form-control" id="content" name="content">
+        <div id="form-container" class="container">
+            <div th:object="${boardForm}">
+                <div align="right">
+                    <input type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" readonly
+                           id="title" name="title" th:errorclass="fieldError">
+                </div>
+                <!-- Create the editor container -->
+                <div id="editor-container" aria-readonly="true">
+                    <p th:utext="*{content}"></p>
+                </div>
+                <input type="hidden" th:field="*{content}" class="form-control" id="content" name="content">
 
-      </div>
+            </div>
+        </div>
+
+        <!-- Include the Quill library -->
+        <script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
+
+        <!-- Initialize Quill editor -->
+        <script>
+            const content = document.getElementById('content').value;
+            var Size = Quill.import('attributors/style/size');
+            Size.whitelist = ['14px', '16px', '18px'];
+            Quill.register(Size, true);
+
+            var toolbarOptions = [
+                [{ 'size': ['14px', '16px', '18px'] }],
+            ];
+
+            var quill = new Quill("#editor-container", {
+                theme: 'snow',
+                modules: {
+                toolbar: toolbarOptions
+                },
+                placeholder: content,
+                readOnly: true
+            });
+
+        <!--const selection = quill.getSelection(true)-->
+        <!--quill.insertText(selection.index, content) // 셀렉션 위치-->
+
+        <!--글자수 5000자 제한(넘길 시 글자 제거)-->
+        const maxLength = 5000
+
+        quill.on('editor-change', e => {
+            const length = quill.getLength()
+            if (length > maxLength) quill.deleteText(maxLength, length)
+        })
+
+
+        </script>
+
     </div>
-
-    <!-- Include the Quill library -->
-    <script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
-
-    <!-- Initialize Quill editor -->
-    <script>
-    const content = document.getElementById('content').value;
-    var Size = Quill.import('attributors/style/size');
-    Size.whitelist = ['14px', '16px', '18px'];
-    Quill.register(Size, true);
-
-    var toolbarOptions = [
-        [{ 'size': ['14px', '16px', '18px'] }],
-    ];
-
-    var quill = new Quill("#editor-container", {
-        theme: 'snow',
-        modules: {
-        toolbar: toolbarOptions
-        },
-        placeholder: content,
-        readOnly: true
-    });
-
-<!--const selection = quill.getSelection(true)-->
-<!--quill.insertText(selection.index, content) // 셀렉션 위치-->
-
-<!--글자수 5000자 제한(넘길 시 글자 제거)-->
-const maxLength = 5000
-
-quill.on('editor-change', e => {
-	const length = quill.getLength()
-	if (length > maxLength) quill.deleteText(maxLength, length)
-})
-
-
-
-
-</script>
-
-  </div>
-  <div th:replace="fragments/footer :: footer" />
+    <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->
 </body>
 </html>

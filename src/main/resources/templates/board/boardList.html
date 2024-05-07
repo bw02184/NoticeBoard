@@ -3,13 +3,13 @@
 <head th:replace="fragments/header :: header"/>
 <body>
 <style>
-   .my_btn {
-	  background-color: Lightslategray;
-	  color: white;
-	  border: none;
-	  width: 100px;
-	  height: 30px;
-	}
+    .my_btn {
+       background-color: Lightslategray;
+       color: white;
+       border: none;
+       width: 100px;
+       height: 30px;
+     }
 
 </style>
 <div class="container">
@@ -45,8 +45,9 @@
                 <td>
                     <button th:if="${member.loginId == form.member?.loginId} or ${member?.grade == T(sws.NoticeBoard.domain.Grade).ADMIN}"
                             th:boardParam="${form.id}"
-                       th:onclick="deleteCheck(this.getAttribute('boardParam'))"
-                       class="btn btn-danger">삭제</button>
+                            th:onclick="deleteCheck(this.getAttribute('boardParam'))"
+                            class="btn btn-danger">삭제
+                    </button>
                 </td>
             </tr>
             </tbody>

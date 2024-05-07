@@ -4,9 +4,9 @@ import sws.NoticeBoard.trace.template.TraceStatus;
 
 public interface LogTrace {
 
-  TraceStatus begin(String message);
+	TraceStatus begin(String message);
 
-  void end(TraceStatus status);
+	void end(TraceStatus status);
 
-  void exception(TraceStatus status, Exception e);
+	void exception(TraceStatus status, Exception e);
 }

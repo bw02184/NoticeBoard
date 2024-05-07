@@ -9,22 +9,22 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
 @EnableAsync
-public class AsyncConfig implements AsyncConfigurer  {
+public class AsyncConfig implements AsyncConfigurer {
 
-    @Bean
-    public TaskExecutor taskExecutor() {
-        ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-        int processors = Runtime.getRuntime().availableProcessors();
-        taskExecutor.setCorePoolSize(processors);
-        taskExecutor.setMaxPoolSize(processors * 2);
-        taskExecutor.setQueueCapacity(100);
-        taskExecutor.setMaxPoolSize(50);
-        // 내가 만든 데코레이터 설정
-        taskExecutor.setTaskDecorator(new ClonedTaskDecorator());
-        taskExecutor.setThreadNamePrefix("async-task-");
-        taskExecutor.setThreadGroupName("async-group");
+	@Bean
+	public TaskExecutor taskExecutor() {
+		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+		int processors = Runtime.getRuntime().availableProcessors();
+		taskExecutor.setCorePoolSize(processors);
+		taskExecutor.setMaxPoolSize(processors * 2);
+		taskExecutor.setQueueCapacity(100);
+		taskExecutor.setMaxPoolSize(50);
+		// 내가 만든 데코레이터 설정
+		taskExecutor.setTaskDecorator(new ClonedTaskDecorator());
+		taskExecutor.setThreadNamePrefix("async-task-");
+		taskExecutor.setThreadGroupName("async-group");
 
-        return taskExecutor;
-    }
+		return taskExecutor;
+	}
 
 }
