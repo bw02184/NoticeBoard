@@ -36,7 +36,7 @@ public class BoardService {
 		Board board = new Board();
 		board.setTitle(form.getTitle());
 		board.setContent(form.getContent());
-		board.setNoticeYn(false);
+		board.setNoticeYn(form.isNoticeYn());
 		board.setMember(findmember);
 		board.setViewCount(0);
 		boardRepository.save(board);
@@ -75,7 +75,7 @@ public class BoardService {
 	}
 
 	public PageResultDTO<BoardForm, Board> getList(PageRequestDTO requestDTO) {
-		Pageable pageable = requestDTO.getPageable(Sort.by("id").descending());
+		Pageable pageable = requestDTO.getPageable(Sort.by("noticeYn").descending().and(Sort.by("id").descending()));
 		log.info("pageable={}", pageable);
 		Page<Board> result = boardJpaRepository.findAll(pageable);
 		return new PageResultDTO<>(result);

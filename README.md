@@ -88,9 +88,9 @@
 
 ### 테스트 계정
 
-1. ID : test / PW : test
-2. ID : test2 / PW : test2
-3. ID : admin / PW : admin
+1. ID : test / PW : test (일반회원)
+2. ID : test2 / PW : test2 (일반회원)
+3. ID : admin / PW : admin (공지글 작성 가능 및 모든 게시물 삭제 가능)
 
 ### ERD
 

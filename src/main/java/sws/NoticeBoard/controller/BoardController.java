@@ -37,7 +37,17 @@ public class BoardController {
 	private final CookieUtil cookieUtil;
 
 	@GetMapping("/board/save")
-	public String board(@ModelAttribute BoardForm form) {
+	public String board(@ModelAttribute BoardForm form,
+		Model model,
+		@CookieValue(value = "swsToken", required = false) Cookie cookie) {
+		String loginId = "";
+		try {
+			loginId = cookieUtil.getUsernameFromToken(cookie);
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+		Member member = memberService.memberLoad(loginId);
+		model.addAttribute("member", member);
 		return "board/boardSave";
 	}
 

@@ -39,16 +39,29 @@
         <link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet"/>
 
         <div id="form-container" class="container">
-            <form th:action="@{/board/save}" th:object="${boardForm}" method="POST">
+            <form th:object="${boardForm}" method="POST">
                 <div th:if="${#fields.hasGlobalErrors()}">
                     <p class="fieldError" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
                 </div>
 
                 <div align="right">
-                    <button class="my_btn" type="submit">저장</button>
-                    <input type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요" id="title"
-                           name="title"
-                           th:errorclass="fieldError">
+                    <button class="my_btn" value="save" onclick="javascript: form.action='/board/save';" type="submit">
+                        저장
+                    </button>
+                    <div align="left">
+                        <select th:if="${member?.grade == T(sws.NoticeBoard.domain.Grade).ADMIN}"
+                                style="width:100px;height:40px;" th:errorclass="fieldError" class="form-select"
+                                id="noticeYn" name="noticeYn">
+                            <option value="false">글 유형</option>
+                            <option value="false" selected>일반</option>
+                            <option value="true">공지글</option>
+                        </select>
+                        <input type="text" th:field="*{title}" class="form-control"
+                               placeholder="제목을 입력하세요" id="title"
+                               name="title"
+                               th:errorclass="fieldError">
+
+                    </div>
                     <div class="field-error" th:errors="*{title}"/>
 
                 </div>

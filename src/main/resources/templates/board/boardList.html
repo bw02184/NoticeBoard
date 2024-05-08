@@ -31,7 +31,8 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="form : ${result.dtoList}">
+            <tr th:each="form : ${result.dtoList}"
+                th:style="${form.noticeYn == true} ?  'font-weight:bold' : '' ">
                 <td th:text="${form.id}"
                     th:onclick="|location.href='@{/board/list/{id}(id=${form.id}, page=${result.page})}'|"></td>
                 <td th:text="${form.title}"
