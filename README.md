@@ -17,20 +17,25 @@
 ### 구조
 
 ~~~
-─src
+└─src
     ├─main
-    │  ├─generated
     │  ├─java
     │  │  └─sws
     │  │      └─NoticeBoard
     │  │          ├─controller
     │  │          │  └─form
+    │  │          ├─cookie
     │  │          ├─domain
     │  │          ├─interceptor
+    │  │          ├─jwt
     │  │          ├─mail
     │  │          ├─repository
     │  │          ├─service
-    │  │          └─session
+    │  │          ├─session
+    │  │          └─trace
+    │  │              ├─aspect
+    │  │              ├─logtrace
+    │  │              └─template
     │  └─resources
     │      ├─static
     │      │  ├─css
@@ -73,7 +78,7 @@
 - 게시판 작성하기 -quill editor 사용(이미지 업로드 가능)
 - 게시판 목록 보기 - 페이지네이션 적용
 - 게시판 수정하기 - 작성한 사람만 수정 가능
-- 게시판 삭제하기 - 작성한 사람만 삭제 가능
+- 게시판 삭제하기 - 작성한 사람 & 관리자 삭제 가능
 
 회원기능(댓글 기능)
 
@@ -86,6 +91,8 @@
 
 - 하나의 요청 request마다 logging기능(AOP 사용)
 
+  <img src="https://github.com/bw02184/NoticeBoard/assets/102367393/807870ac-6359-44f7-a79f-e4df8b6ca9ea">
+
 ### 테스트 계정
 
 1. ID : test / PW : test (일반회원)
@@ -96,9 +103,25 @@
 
 ![erd](https://github.com/bw02184/NoticeBoard/assets/102367393/89da8996-71d9-49cc-b03c-491475af86b4)
 
-### 주요 기능 - 게시판 수정
+### 주요 기능
 
-![ezgif-5-c095c6abf8](https://github.com/bw02184/NoticeBoard/assets/102367393/a93ede3b-6d0a-4648-af72-46e8e7f1dbfb)
+- 이메일 인증 기능
+  <img src="https://github.com/bw02184/NoticeBoard/assets/102367393/24427f15-468b-49c6-b89e-dff20fde625c">
+
+- 공지글 및 일반글 목록
+  <img src="https://github.com/bw02184/NoticeBoard/assets/102367393/63e646c7-ef85-4d1d-aafd-1efffefb98e2">
+
+- 게시판 이미지 저장
+  <img src="https://github.com/bw02184/NoticeBoard/assets/102367393/b74c5d6a-e0c4-4fe3-8aaa-f4becfb26d09">
+
+- 게시판 댓글
+  ![image](https://github.com/bw02184/NoticeBoard/assets/102367393/ff039ae1-1d0d-4666-987c-31eaf86bf2dc)
+- 게시판 수정
+  ![ezgif-5-c095c6abf8](https://github.com/bw02184/NoticeBoard/assets/102367393/a93ede3b-6d0a-4648-af72-46e8e7f1dbfb)
+
+### 코드 컨벤션
+
+- CheckStyle(네이버 코당 컨벤션) & Save Actions 사용
 
 ### CICD(https://github.com/bw02184/git-action-test 참고)
 
