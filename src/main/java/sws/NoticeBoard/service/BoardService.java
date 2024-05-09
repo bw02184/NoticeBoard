@@ -39,6 +39,7 @@ public class BoardService {
 		board.setNoticeYn(form.isNoticeYn());
 		board.setMember(findmember);
 		board.setViewCount(0);
+		board.setThumbnailName(form.getThumbnailName());
 		boardRepository.save(board);
 	}
 

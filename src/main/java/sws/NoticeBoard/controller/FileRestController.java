@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,9 +46,9 @@ public class FileRestController {
 		// OS 따라 구분자 분리
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("win")) {
-			savePath = System.getProperty("user.dir") + "\\files\\image";
+			savePath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files\\image";
 		} else {
-			savePath = System.getProperty("user.dir") + "/files/image";
+			savePath = System.getProperty("user.dir") + "/src/main/resources/static/files/image";
 		}
 
 		java.io.File uploadPath = new java.io.File(savePath);
@@ -60,11 +61,12 @@ public class FileRestController {
 		for (MultipartFile multipartFile : uploadFile) {
 
 			String uploadFileName = multipartFile.getOriginalFilename();
+			String extension = StringUtils.getFilenameExtension(uploadFileName);
 
 			String uuid = UUID.randomUUID().toString();
 
 			// 파일명 저장
-			uploadFileName = uuid + "_" + uploadFileName;
+			uploadFileName = uuid + "." + extension;
 
 			java.io.File saveFile = new java.io.File(uploadPath, uploadFileName);
 
@@ -95,9 +97,9 @@ public class FileRestController {
 		// OS 따라 구분자 분리
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("win")) {
-			savePath = System.getProperty("user.dir") + "\\files\\image\\";
+			savePath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files\\image\\";
 		} else {
-			savePath = System.getProperty("user.dir") + "/files/image/";
+			savePath = System.getProperty("user.dir") + "/src/main/resources/static/files/image/";
 		}
 
 		// 설정한 경로로 파일 다운로드

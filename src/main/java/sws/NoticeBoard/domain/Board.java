@@ -46,6 +46,8 @@ public class Board {
 	@Column(columnDefinition = "boolean default false")
 	private Boolean noticeYn; // 공지글 여부
 
+	private String thumbnailName;
+
 	@CreatedDate
 	@Column(updatable = false)
 	private LocalDateTime create_at;

@@ -1,7 +1,11 @@
 package sws.NoticeBoard.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +20,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import net.coobird.thumbnailator.Thumbnails;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,12 +68,32 @@ public class BoardController {
 		String loginId = "";
 		try {
 			loginId = cookieUtil.getUsernameFromToken(cookie);
-		} catch (UnsupportedEncodingException e) {
+			String fileName = getFileName(form.getContent());
+			if (!fileName.equals("")) {
+				String savePath = System.getProperty("user.dir") + "/src/main/resources/static/files/image/";
+				StringBuffer sb = new StringBuffer(fileName);
+				sb.insert(36, "_thumbnail");
+				form.setThumbnailName(sb.toString());
+				Thumbnails.of(new File(savePath + fileName))
+					.size(160, 160)
+					.toFile(new File(savePath + sb));
+			}
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		boardService.save(form, loginId);
 
 		return "redirect:/board/list";
+	}
+
+	private String getFileName(String content) {
+		Pattern pattern = Pattern.compile(
+			"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.(jpeg|jpg|png|gif|bmp)");
+		Matcher matcher = pattern.matcher(content);
+		if (matcher.find()) {
+			return matcher.group();
+		}
+		return "";
 	}
 
 	@GetMapping("/board/list")

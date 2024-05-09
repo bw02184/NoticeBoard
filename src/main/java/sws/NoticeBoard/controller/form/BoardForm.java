@@ -23,6 +23,8 @@ public class BoardForm {
 	@Column(length = 5000)
 	private String content; // 내용
 
+	private String thumbnailName;
+
 	@Column(columnDefinition = "boolean default false")
 	private boolean noticeYn; //공지글 여부
 

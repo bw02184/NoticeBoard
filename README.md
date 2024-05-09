@@ -108,8 +108,8 @@
 - 이메일 인증 기능
   <img src="https://github.com/bw02184/NoticeBoard/assets/102367393/24427f15-468b-49c6-b89e-dff20fde625c">
 
-- 공지글 및 일반글 목록
-  <img src="https://github.com/bw02184/NoticeBoard/assets/102367393/63e646c7-ef85-4d1d-aafd-1efffefb98e2">
+- 공지글 및 일반글 목록 & 썸네일
+  <img src="https://github.com/bw02184/NoticeBoard/assets/102367393/31b3fc8b-46c7-40fb-a6b7-6f2ad7017d3b">
 
 - 게시판 이미지 저장
   <img src="https://github.com/bw02184/NoticeBoard/assets/102367393/b74c5d6a-e0c4-4fe3-8aaa-f4becfb26d09">
