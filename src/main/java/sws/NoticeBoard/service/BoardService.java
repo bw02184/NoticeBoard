@@ -63,6 +63,7 @@ public class BoardService {
 			return;
 		findBoard.setTitle(form.getTitle());
 		findBoard.setContent(form.getContent());
+		findBoard.setThumbnailName(form.getThumbnailName());
 	}
 
 	public void delete(Long id, String loginId) {

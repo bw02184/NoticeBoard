@@ -46,9 +46,9 @@ public class FileRestController {
 		// OS 따라 구분자 분리
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("win")) {
-			savePath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files\\image";
+			savePath = System.getProperty("user.dir") + "\\files\\image";
 		} else {
-			savePath = System.getProperty("user.dir") + "/src/main/resources/static/files/image";
+			savePath = System.getProperty("user.dir") + "/files/image";
 		}
 
 		java.io.File uploadPath = new java.io.File(savePath);
@@ -97,9 +97,9 @@ public class FileRestController {
 		// OS 따라 구분자 분리
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.contains("win")) {
-			savePath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files\\image\\";
+			savePath = System.getProperty("user.dir") + "\\files\\image\\";
 		} else {
-			savePath = System.getProperty("user.dir") + "/src/main/resources/static/files/image/";
+			savePath = System.getProperty("user.dir") + "/files/image/";
 		}
 
 		// 설정한 경로로 파일 다운로드

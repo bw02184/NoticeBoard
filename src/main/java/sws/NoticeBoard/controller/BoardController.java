@@ -70,7 +70,7 @@ public class BoardController {
 			loginId = cookieUtil.getUsernameFromToken(cookie);
 			String fileName = getFileName(form.getContent());
 			if (!fileName.equals("")) {
-				String savePath = System.getProperty("user.dir") + "/src/main/resources/static/files/image/";
+				String savePath = System.getProperty("user.dir") + "/files/image/";
 				StringBuffer sb = new StringBuffer(fileName);
 				sb.insert(36, "_thumbnail");
 				form.setThumbnailName(sb.toString());
@@ -179,7 +179,18 @@ public class BoardController {
 		String loginId = "";
 		try {
 			loginId = cookieUtil.getUsernameFromToken(cookie);
-		} catch (UnsupportedEncodingException e) {
+			String fileName = getFileName(form.getContent());
+			if (!fileName.equals("")) {
+				String savePath = System.getProperty("user.dir") + "/files/image/";
+				StringBuffer sb = new StringBuffer(fileName);
+				sb.insert(36, "_thumbnail");
+				form.setThumbnailName(sb.toString());
+				Thumbnails.of(new File(savePath + fileName))
+					.size(160, 160)
+					.toFile(new File(savePath + sb));
+			} else
+				form.setThumbnailName(null);
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		boardService.update(form, loginId);
